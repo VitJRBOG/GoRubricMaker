@@ -24,7 +24,7 @@ func AddLoss() {
 }
 
 func readJSONFileLoss() []loss {
-	varStringJSON, err := ioutil.ReadFile("./output/loss.json")
+	varStringJSON, err := ioutil.ReadFile("./src/output/loss.json")
 
 	if err != nil {
 		fmt.Print("COMPUTER: Error, ")
