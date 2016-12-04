@@ -19,8 +19,156 @@ type question struct {
 }
 
 func ShowMenuQuestions() {
-	fmt.Println("COMPUTER: You are in MENU QUESTIONS. Here is empty. Return to main menu...")
+	fmt.Println("COMPUTER: You are in MENU QUESTIONS.")
+	fmt.Println("COMPUTER: [.. -> Lists -> Menu questions -> ..] 1 == Show questions list.")
+	fmt.Println("COMPUTER: [Lists <- Menu questions] 0 == Step back, to lists.")
+
+	var varIntUserAnswer int
+
+	fmt.Print("USER: [.. -> Menu questions -> ] ")
+	_, err := fmt.Scanf("%d", &varIntUserAnswer)
+	fmt.Println("COMPUTER: ...")
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Return to menu questions...")
+		ShowMenuQuestions()
+	} else {
+		if varIntUserAnswer == 1 {
+			showListQuestions()
+		} else {
+			if varIntUserAnswer == 0 {
+				ShowLists()
+			} else {
+				fmt.Println("COMPUTER: Unknown command. Return to menu questions...")
+				ShowMenuQuestions()
+			}
+		}
+	}
+
 	ShowMainMenu()
+}
+
+func showListQuestions() {
+	fmt.Println("COMPUTER: You are in LIST QUESTIONS.")
+
+	fmt.Println("COMPUTER: [.. -> Menu questions -> List questions -> ..] 1 == " +
+		"Output list of questions to console.")
+	fmt.Println("COMPUTER: [.. -> Menu questions -> List questions -> ..] 2 == Export list of questions to file.")
+	fmt.Println("COMPUTER: [Menu questions <- List questions] 0 == Step back, to menu questions.")
+
+	var varIntUserAnswer int
+
+	fmt.Print("USER: [.. -> List questions -> ] ")
+	_, err := fmt.Scanf("%d", &varIntUserAnswer)
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Return to list questions...")
+		ShowLists()
+	} else {
+		if varIntUserAnswer == 1 {
+			outputQuestionsToConsole()
+		} else {
+			if varIntUserAnswer == 2 {
+				exportQuestionsInFile()
+			} else {
+				if varIntUserAnswer == 0 {
+					ShowMenuQuestions()
+				} else {
+					fmt.Println("COMPUTER: Unknown command. Return to list questions...")
+					showListQuestions()
+				}
+			}
+		}
+	}
+}
+
+func outputQuestionsToConsole() {
+	fmt.Println("COMPUTER: [.. -> List questions -> Output of list -> ..] Reading JSON file...")
+
+	arrayQuestions := readJSONFileQuestions()
+
+	fmt.Println("COMPUTER: [.. -> Output of list -> Begin of list]")
+	fmt.Print("\n")
+	for _, varQuestion := range arrayQuestions {
+		fmt.Print(varQuestion.Number)
+		fmt.Println(varQuestion.Body)
+		for _, varQuestionContent := range varQuestion.Content {
+			fmt.Println(varQuestionContent)
+		}
+		if varQuestion.Author != "" {
+			fmt.Println(varQuestion.Author)
+		}
+		fmt.Print("\n")
+	}
+
+	fmt.Println("COMPUTER: [.. -> Output of list -> End of list] Press Enter for continue...")
+
+	var varStringUserAnswer string
+
+	fmt.Print("USER: [.. -> Output of list -> End of list -> ] ")
+	fmt.Scanf("%s", &varStringUserAnswer)
+
+	showListQuestions()
+}
+
+func exportQuestionsInFile() {
+	fmt.Println("COMPUTER: [.. -> List questions -> Export of list] Reading JSON file...")
+
+	arrayQuestions := readJSONFileQuestions()
+
+	var varStringListForExport string = ""
+
+	fmt.Println("COMPUTER: [.. -> List questions -> Export of list] Export of list to file 'questions.txt'...")
+	for _, varQuestion := range arrayQuestions {
+		varStringListForExport += varQuestion.Number
+		varStringListForExport += varQuestion.Body + "\n"
+		for _, varQuestionContent := range varQuestion.Content {
+			varStringListForExport += varQuestionContent + "\n"
+		}
+		if varQuestion.Author != "" {
+			varStringListForExport += varQuestion.Author + "\n"
+		}
+		varStringListForExport += "\n"
+	}
+
+	varBytesListQuestions := []byte(varStringListForExport)
+
+	_, err := os.Create("~/Desktop/questions.txt")
+	//FIXME //fix path
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Return to list questions...")
+		showListQuestions()
+	}
+
+	err = ioutil.WriteFile("~/Desktop/questions.txt", varBytesListQuestions, 0)
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Return to list questions...")
+		showListQuestions()
+	}
+
+	fmt.Println("COMPUTER: [.. -> List questions -> Export of list] " +
+		"Export was successfully completed. Press Enter for continue...")
+
+	var varStringUserAnswer string
+
+	fmt.Print("USER: [.. -> Export of list -> End of list -> ] ")
+	fmt.Scanf("%s", &varStringUserAnswer)
+
+	showListQuestions()
 }
 
 func AddQuestion() {

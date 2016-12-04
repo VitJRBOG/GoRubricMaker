@@ -12,11 +12,11 @@ func ShowMainMenu() {
 
 	var varIntUserAnswer int
 
-	fmt.Print("USER: Main menu -> ")
+	fmt.Print("USER: [Main menu -> ] ")
 	_, err := fmt.Scanf("%d", &varIntUserAnswer)
-	fmt.Println("COMPUTER: ...")
 
 	if err != nil {
+		fmt.Println("COMPUTER: ...")
 		fmt.Print("COMPUTER: Error, ")
 		fmt.Print(err)
 		fmt.Println(". Return to main menu...")
@@ -51,11 +51,11 @@ func ShowLists() {
 
 	var varIntUserAnswer int
 
-	fmt.Print("USER: .. -> Lists -> ")
+	fmt.Print("USER: [.. -> Lists -> ] ")
 	_, err := fmt.Scanf("%d", &varIntUserAnswer)
-	fmt.Println("COMPUTER: ...")
 
 	if err != nil {
+		fmt.Println("COMPUTER: ...")
 		fmt.Print("COMPUTER: Error, ")
 		fmt.Print(err)
 		fmt.Println(". Return to lists...")
