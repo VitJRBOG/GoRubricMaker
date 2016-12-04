@@ -19,8 +19,155 @@ type loss struct {
 }
 
 func ShowMenuLoss() {
-	fmt.Println("COMPUTER: You are in MENU LOSS. Here is empty. Return to main menu...")
+	fmt.Println("COMPUTER: You are in MENU LOSS.")
+	fmt.Println("COMPUTER: [.. -> Lists -> Menu loss -> ..] 1 == Show loss list.")
+	fmt.Println("COMPUTER: [Lists <- Menu loss] 0 == Step back, to lists.")
+
+	var varIntUserAnswer int
+
+	fmt.Print("USER: [.. -> Menu loss -> ] ")
+	_, err := fmt.Scanf("%d", &varIntUserAnswer)
+	fmt.Println("COMPUTER: ...")
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Return to menu loss...")
+		ShowMenuLoss()
+	} else {
+		if varIntUserAnswer == 1 {
+			showListLoss()
+		} else {
+			if varIntUserAnswer == 0 {
+				ShowLists()
+			} else {
+				fmt.Println("COMPUTER: Unknown command. Return to menu loss...")
+				ShowMenuLoss()
+			}
+		}
+	}
+
 	ShowMainMenu()
+}
+
+func showListLoss() {
+	fmt.Println("COMPUTER: You are in LIST LOSS.")
+
+	fmt.Println("COMPUTER: [.. -> Menu loss -> List loss -> ..] 1 == " +
+		"Output list of loss to console.")
+	fmt.Println("COMPUTER: [.. -> Menu loss -> List loss -> ..] 2 == Export list of loss to file.")
+	fmt.Println("COMPUTER: [Menu loss <- List loss] 0 == Step back, to menu loss.")
+
+	var varIntUserAnswer int
+
+	fmt.Print("USER: [.. -> List loss -> ] ")
+	_, err := fmt.Scanf("%d", &varIntUserAnswer)
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Return to list loss...")
+		ShowLists()
+	} else {
+		if varIntUserAnswer == 1 {
+			outputLossToConsole()
+		} else {
+			if varIntUserAnswer == 2 {
+				exportLossInFile()
+			} else {
+				if varIntUserAnswer == 0 {
+					ShowMenuLoss()
+				} else {
+					fmt.Println("COMPUTER: Unknown command. Return to list loss...")
+					showListLoss()
+				}
+			}
+		}
+	}
+}
+
+func outputLossToConsole() {
+	fmt.Println("COMPUTER: [.. -> List loss -> Output of list -> ..] Reading JSON file...")
+
+	arrayLoss := readJSONFileLoss()
+
+	fmt.Println("COMPUTER: [.. -> Output of list -> Begin of list]")
+	fmt.Print("\n")
+	for _, varLoss := range arrayLoss {
+		fmt.Print(varLoss.Number)
+		fmt.Println(varLoss.Body)
+		for _, varLossContent := range varLoss.Content {
+			fmt.Println(varLossContent)
+		}
+		if varLoss.Author != "" {
+			fmt.Println(varLoss.Author)
+		}
+		fmt.Print("\n")
+	}
+
+	fmt.Println("COMPUTER: [.. -> Output of list -> End of list] Press Enter for continue...")
+
+	var varStringUserAnswer string
+
+	fmt.Print("USER: [.. -> Output of list -> End of list -> ] ")
+	fmt.Scanf("%s", &varStringUserAnswer)
+
+	showListLoss()
+}
+
+func exportLossInFile() {
+	fmt.Println("COMPUTER: [.. -> List loss -> Export of list] Reading JSON file...")
+
+	arrayLoss := readJSONFileLoss()
+
+	var varStringListForExport string = ""
+
+	fmt.Println("COMPUTER: [.. -> List loss -> Export of list] Export of list to file 'loss.txt'...")
+	for _, varLoss := range arrayLoss {
+		varStringListForExport += varLoss.Number
+		varStringListForExport += varLoss.Body + "\n"
+		for _, varLossContent := range varLoss.Content {
+			varStringListForExport += varLossContent + "\n"
+		}
+		if varLoss.Author != "" {
+			varStringListForExport += varLoss.Author + "\n"
+		}
+		varStringListForExport += "\n"
+	}
+
+	varBytesListLoss := []byte(varStringListForExport)
+
+	_, err := os.Create("./src/output/loss.txt")
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Return to list loss...")
+		showListLoss()
+	}
+
+	err = ioutil.WriteFile("./src/output/loss.txt", varBytesListLoss, 0)
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Return to list loss...")
+		showListLoss()
+	}
+
+	fmt.Println("COMPUTER: [.. -> List loss -> Export of list] " +
+		"Export was successfully completed. Press Enter for continue...")
+
+	var varStringUserAnswer string
+
+	fmt.Print("USER: [.. -> Export of list -> End of list -> ] ")
+	fmt.Scanf("%s", &varStringUserAnswer)
+
+	showListLoss()
 }
 
 func AddLoss() {
@@ -52,7 +199,7 @@ func AddLoss() {
 }
 
 func readJSONFileLoss() []loss {
-	varStringJSON, err := ioutil.ReadFile("./src/output/loss.json")
+	varStringJSON, err := ioutil.ReadFile("./src/json/loss.json")
 
 	if err != nil {
 		fmt.Print("COMPUTER: Error, ")
@@ -93,7 +240,7 @@ func writeToJSONFileLoss(arrayLoss []loss, varLossNewNote loss) {
 				fmt.Println(". Retry of query...")
 				writeToJSONFileLoss(arrayLoss, varLossNewNote)
 			} else {
-				err := ioutil.WriteFile("./src/output/loss.json", varBytesLoss, 0)
+				err := ioutil.WriteFile("./src/json/loss.json", varBytesLoss, 0)
 
 				if err != nil {
 					fmt.Println("COMPUTER: ...")
@@ -122,7 +269,7 @@ func writeToJSONFileLoss(arrayLoss []loss, varLossNewNote loss) {
 
 func makeBodyNewLossToJSONFileLoss(varIntIdNewLoss int) loss {
 
-	var varStringLossNumber string = "1." + strconv.Itoa(varIntIdNewLoss) + ") "
+	var varStringLossNumber string = "2." + strconv.Itoa(varIntIdNewLoss) + ") "
 	varStringLossBody := queryBodyForNewLoss()
 	arrayStringLossContent := queryContentForNewLoss()
 	varStringLossAuthor := queryAuthorForNewLoss()

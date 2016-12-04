@@ -139,8 +139,7 @@ func exportQuestionsInFile() {
 
 	varBytesListQuestions := []byte(varStringListForExport)
 
-	_, err := os.Create("~/Desktop/questions.txt")
-	//FIXME //fix path
+	_, err := os.Create("./src/output/questions.txt")
 
 	if err != nil {
 		fmt.Println("COMPUTER: ...")
@@ -150,7 +149,7 @@ func exportQuestionsInFile() {
 		showListQuestions()
 	}
 
-	err = ioutil.WriteFile("~/Desktop/questions.txt", varBytesListQuestions, 0)
+	err = ioutil.WriteFile("./src/output/questions.txt", varBytesListQuestions, 0)
 
 	if err != nil {
 		fmt.Println("COMPUTER: ...")
@@ -200,7 +199,7 @@ func AddQuestion() {
 }
 
 func readJSONFileQuestions() []question {
-	varStringJSON, err := ioutil.ReadFile("./src/output/questions.json")
+	varStringJSON, err := ioutil.ReadFile("./src/json/questions.json")
 
 	if err != nil {
 		fmt.Println("COMPUTER: ...")
@@ -242,7 +241,7 @@ func writeToJSONFileQuestions(arrayQuestions []question, varQuestionNewNote ques
 				fmt.Println(". Retry of query...")
 				writeToJSONFileQuestions(arrayQuestions, varQuestionNewNote)
 			} else {
-				err := ioutil.WriteFile("./src/output/questions.json", varBytesQuestions, 0)
+				err := ioutil.WriteFile("./src/json/questions.json", varBytesQuestions, 0)
 
 				if err != nil {
 					fmt.Println("COMPUTER: ...")
