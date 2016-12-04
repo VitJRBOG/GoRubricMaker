@@ -1,21 +1,21 @@
 package main
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"encoding/json"
-	"strconv"
-	"bufio"
 	"os"
+	"strconv"
 	"strings"
 )
 
 type question struct {
-	ID int `json:"id"`
-	Number string `json:"number"`
-	Body string `json:"body"`
+	ID      int      `json:"id"`
+	Number  string   `json:"number"`
+	Body    string   `json:"body"`
 	Content []string `json:"content"`
-	Author string `json:"author"`
+	Author  string   `json:"author"`
 }
 
 func ShowMenuQuestions() {
@@ -57,6 +57,7 @@ func showListQuestions() {
 	fmt.Println("COMPUTER: [.. -> Menu questions -> List questions -> ..] 1 == " +
 		"Output list of questions to console.")
 	fmt.Println("COMPUTER: [.. -> Menu questions -> List questions -> ..] 2 == Export list of questions to file.")
+	fmt.Println("COMPUTER: [.. -> Menu questions -> List questions -> ..] 3 == Clear JSON file.")
 	fmt.Println("COMPUTER: [Menu questions <- List questions] 0 == Step back, to menu questions.")
 
 	var varIntUserAnswer int
@@ -77,11 +78,15 @@ func showListQuestions() {
 			if varIntUserAnswer == 2 {
 				exportQuestionsInFile()
 			} else {
-				if varIntUserAnswer == 0 {
-					ShowMenuQuestions()
+				if varIntUserAnswer == 3 {
+					clearJSONFileQuestions()
 				} else {
-					fmt.Println("COMPUTER: Unknown command. Return to list questions...")
-					showListQuestions()
+					if varIntUserAnswer == 0 {
+						ShowMenuQuestions()
+					} else {
+						fmt.Println("COMPUTER: Unknown command. Return to list questions...")
+						showListQuestions()
+					}
 				}
 			}
 		}
@@ -170,6 +175,41 @@ func exportQuestionsInFile() {
 	showListQuestions()
 }
 
+func clearJSONFileQuestions() {
+	fmt.Println("COMPUTER: [.. -> List questions -> Cleaning JSON file] " +
+		"Cleaning JSON file 'questions.json'. Are you sure? (1/0)")
+
+	var varIntUserAnswer int
+
+	fmt.Print("USER: [.. -> Cleaning JSON file -> ] ")
+	_, err := fmt.Scanf("%d", &varIntUserAnswer)
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Retry of query...")
+		clearJSONFileQuestions()
+	} else {
+		if varIntUserAnswer == 1 {
+			ioutil.WriteFile("./src/json/questions.json", nil, 0)
+			fmt.Println("COMPUTER: [.. -> List questions -> Cleaning JSON file] Cleaning " +
+				"successfully completed. Return to list questions.")
+		} else {
+			if varIntUserAnswer == 0 {
+				fmt.Println("COMPUTER: [.. -> List questions -> Cleaning JSON file] Cancel. " +
+					"Return to list questions...")
+				showListQuestions()
+			} else {
+				fmt.Println("COMPUTER: Unknown command. Retry of query...")
+				clearJSONFileQuestions()
+			}
+		}
+	}
+
+	showListQuestions()
+}
+
 func AddQuestion() {
 	fmt.Println("COMPUTER: You are in ADD QUESTIONS.")
 	fmt.Println("COMPUTER: [Main menu -> Add question -> ..] Reading JSON file...")
@@ -182,7 +222,7 @@ func AddQuestion() {
 		varIntIdLastQuestion = varQuestion.ID
 	}
 
-	varQuestionNewNote := makeBodyNewQuestionToJSONFileQuestions(varIntIdLastQuestion+1)
+	varQuestionNewNote := makeBodyNewQuestionToJSONFileQuestions(varIntIdLastQuestion + 1)
 
 	fmt.Print("COMPUTER: [.. -> Add question -> New question] ")
 	fmt.Print(varQuestionNewNote.Number)
@@ -276,11 +316,11 @@ func makeBodyNewQuestionToJSONFileQuestions(varIntIdNewQuestion int) question {
 	varStringQuestionAuthor := queryAuthorForNewQuestion()
 
 	var varQuestionNewNote = question{
-		ID: varIntIdNewQuestion,
-		Number: varStringQuestionNumber,
-		Body: varStringQuestionBody,
+		ID:      varIntIdNewQuestion,
+		Number:  varStringQuestionNumber,
+		Body:    varStringQuestionBody,
 		Content: arrayStringQuestionContent,
-		Author: varStringQuestionAuthor,
+		Author:  varStringQuestionAuthor,
 	}
 
 	return varQuestionNewNote
@@ -326,7 +366,7 @@ func queryContentForNewQuestion() []string {
 		fmt.Println(". Retry of query...")
 		return queryContentForNewQuestion()
 	} else {
-		if varIntUserAnswer != 0  {
+		if varIntUserAnswer != 0 {
 			arrayStringQuestionContent = append(arrayStringQuestionContent, "Фото: ")
 			arrayStringQuestionContent = collectContentQuestion(arrayStringQuestionContent, 0, varIntUserAnswer)
 			return arrayStringQuestionContent
@@ -360,9 +400,9 @@ func collectContentQuestion(arrayStringQuestionContent []string,
 				arrayStringQuestionContent, varIntNumberIteration, varIntNumberContent)
 		} else {
 			arrayStringQuestionContent = append(arrayStringQuestionContent,
-				"- " + varStringQuestionContent)
+				"- "+varStringQuestionContent)
 			return collectContentQuestion(
-				arrayStringQuestionContent, varIntNumberIteration + 1, varIntNumberContent)
+				arrayStringQuestionContent, varIntNumberIteration+1, varIntNumberContent)
 		}
 	} else {
 		return arrayStringQuestionContent

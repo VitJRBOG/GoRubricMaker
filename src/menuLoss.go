@@ -1,21 +1,21 @@
 package main
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"encoding/json"
-	"strconv"
-	"bufio"
 	"os"
+	"strconv"
 	"strings"
 )
 
 type loss struct {
-	ID int `json:"id"`
-	Number string `json:"number"`
-	Body string `json:"body"`
+	ID      int      `json:"id"`
+	Number  string   `json:"number"`
+	Body    string   `json:"body"`
 	Content []string `json:"content"`
-	Author string `json:"author"`
+	Author  string   `json:"author"`
 }
 
 func ShowMenuLoss() {
@@ -57,6 +57,7 @@ func showListLoss() {
 	fmt.Println("COMPUTER: [.. -> Menu loss -> List loss -> ..] 1 == " +
 		"Output list of loss to console.")
 	fmt.Println("COMPUTER: [.. -> Menu loss -> List loss -> ..] 2 == Export list of loss to file.")
+	fmt.Println("COMPUTER: [.. -> Menu loss -> List loss -> ..] 3 == Clear JSON file.")
 	fmt.Println("COMPUTER: [Menu loss <- List loss] 0 == Step back, to menu loss.")
 
 	var varIntUserAnswer int
@@ -77,11 +78,15 @@ func showListLoss() {
 			if varIntUserAnswer == 2 {
 				exportLossInFile()
 			} else {
-				if varIntUserAnswer == 0 {
-					ShowMenuLoss()
+				if varIntUserAnswer == 3 {
+					clearJSONFileLoss()
 				} else {
-					fmt.Println("COMPUTER: Unknown command. Return to list loss...")
-					showListLoss()
+					if varIntUserAnswer == 0 {
+						ShowMenuLoss()
+					} else {
+						fmt.Println("COMPUTER: Unknown command. Return to list loss...")
+						showListLoss()
+					}
 				}
 			}
 		}
@@ -170,6 +175,41 @@ func exportLossInFile() {
 	showListLoss()
 }
 
+func clearJSONFileLoss() {
+	fmt.Println("COMPUTER: [.. -> List loss -> Cleaning JSON file] " +
+		"Cleaning JSON file 'loss.json'. Are you sure? (1/0)")
+
+	var varIntUserAnswer int
+
+	fmt.Print("USER: [.. -> Cleaning JSON file -> ] ")
+	_, err := fmt.Scanf("%d", &varIntUserAnswer)
+
+	if err != nil {
+		fmt.Println("COMPUTER: ...")
+		fmt.Print("COMPUTER: Error, ")
+		fmt.Print(err)
+		fmt.Println(". Retry of query...")
+		clearJSONFileLoss()
+	} else {
+		if varIntUserAnswer == 1 {
+			ioutil.WriteFile("./src/json/loss.json", nil, 0)
+			fmt.Println("COMPUTER: [.. -> List loss -> Cleaning JSON file] Cleaning " +
+				"successfully completed. Return to list loss.")
+		} else {
+			if varIntUserAnswer == 0 {
+				fmt.Println("COMPUTER: [.. -> List loss -> Cleaning JSON file] Cancel. " +
+					"Return to list loss...")
+				showListLoss()
+			} else {
+				fmt.Println("COMPUTER: Unknown command. Retry of query...")
+				clearJSONFileLoss()
+			}
+		}
+	}
+
+	showListLoss()
+}
+
 func AddLoss() {
 	fmt.Println("COMPUTER: You are in ADD LOSS.")
 	fmt.Println("COMPUTER: [Main menu -> Add loss -> ..] Reading JSON file...")
@@ -182,7 +222,7 @@ func AddLoss() {
 		varIntIdLastLoss = varLoss.ID
 	}
 
-	varLossNewNote := makeBodyNewLossToJSONFileLoss(varIntIdLastLoss +1)
+	varLossNewNote := makeBodyNewLossToJSONFileLoss(varIntIdLastLoss + 1)
 
 	fmt.Print("COMPUTER: [.. -> Add loss -> New loss] ")
 	fmt.Print(varLossNewNote.Number)
@@ -275,11 +315,11 @@ func makeBodyNewLossToJSONFileLoss(varIntIdNewLoss int) loss {
 	varStringLossAuthor := queryAuthorForNewLoss()
 
 	var varLossNewNote = loss{
-		ID: varIntIdNewLoss,
-		Number: varStringLossNumber,
-		Body: varStringLossBody,
+		ID:      varIntIdNewLoss,
+		Number:  varStringLossNumber,
+		Body:    varStringLossBody,
 		Content: arrayStringLossContent,
-		Author: varStringLossAuthor,
+		Author:  varStringLossAuthor,
 	}
 
 	return varLossNewNote
@@ -325,7 +365,7 @@ func queryContentForNewLoss() []string {
 		fmt.Println(". Retry of query...")
 		return queryContentForNewLoss()
 	} else {
-		if varIntUserAnswer != 0  {
+		if varIntUserAnswer != 0 {
 			arrayStringLossContent = append(arrayStringLossContent, "Фото: ")
 			arrayStringLossContent = collectContentLoss(arrayStringLossContent, 0, varIntUserAnswer)
 			return arrayStringLossContent
@@ -336,7 +376,7 @@ func queryContentForNewLoss() []string {
 }
 
 func collectContentLoss(arrayStringLossContent []string,
-varIntNumberIteration int, varIntNumberContent int) []string {
+	varIntNumberIteration int, varIntNumberContent int) []string {
 
 	if varIntNumberIteration != varIntNumberContent {
 
@@ -359,9 +399,9 @@ varIntNumberIteration int, varIntNumberContent int) []string {
 				arrayStringLossContent, varIntNumberIteration, varIntNumberContent)
 		} else {
 			arrayStringLossContent = append(arrayStringLossContent,
-				"- " + varStringLossContent)
+				"- "+varStringLossContent)
 			return collectContentLoss(
-				arrayStringLossContent, varIntNumberIteration + 1, varIntNumberContent)
+				arrayStringLossContent, varIntNumberIteration+1, varIntNumberContent)
 		}
 	} else {
 		return arrayStringLossContent
