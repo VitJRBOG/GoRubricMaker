@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"bufio"
 	"os"
+	"strings"
 )
 
 type question struct {
@@ -102,14 +103,15 @@ func writeToJSONFileQuestions(arrayQuestions []question, varQuestionNewNote ques
 					fmt.Println(". Retry of query...")
 					writeToJSONFileQuestions(arrayQuestions, varQuestionNewNote)
 				} else {
-					fmt.Println("[.. -> Writing question -> ..] " +
+					fmt.Println("COMPUTER: [.. -> Writing question -> ..] " +
 						"Writing was successfully completed. Return to main menu...")
 					ShowMainMenu()
 				}
 			}
 		} else {
 			if varIntUserAnswer == 0 {
-				fmt.Println("[.. -> New question -> ..] Cancel of writing. Return to main menu...")
+				fmt.Println("COMPUTER: [.. -> New question -> ..] " +
+					"Cancel of writing. Return to main menu...")
 				ShowMainMenu()
 			} else {
 				fmt.Println("COMPUTER: Unknown command. Retry of query...")
@@ -179,7 +181,7 @@ func queryContentForNewQuestion() []string {
 	} else {
 		if varIntUserAnswer != 0  {
 			arrayStringQuestionContent = append(arrayStringQuestionContent, "Фото: ")
-			arrayStringQuestionContent = collectContent(arrayStringQuestionContent, 0, varIntUserAnswer)
+			arrayStringQuestionContent = collectContentQuestion(arrayStringQuestionContent, 0, varIntUserAnswer)
 			return arrayStringQuestionContent
 		} else {
 			return arrayStringQuestionContent
@@ -187,7 +189,7 @@ func queryContentForNewQuestion() []string {
 	}
 }
 
-func collectContent(arrayStringQuestionContent []string,
+func collectContentQuestion(arrayStringQuestionContent []string,
 	varIntNumberIteration int, varIntNumberContent int) []string {
 
 	if varIntNumberIteration != varIntNumberContent {
@@ -207,12 +209,12 @@ func collectContent(arrayStringQuestionContent []string,
 			fmt.Print("COMPUTER: Error, ")
 			fmt.Print(err)
 			fmt.Println(". Retry of query...")
-			return collectContent(
+			return collectContentQuestion(
 				arrayStringQuestionContent, varIntNumberIteration, varIntNumberContent)
 		} else {
 			arrayStringQuestionContent = append(arrayStringQuestionContent,
 				"- " + varStringQuestionContent)
-			return collectContent(
+			return collectContentQuestion(
 				arrayStringQuestionContent, varIntNumberIteration + 1, varIntNumberContent)
 		}
 	} else {
@@ -253,8 +255,8 @@ func queryAuthorForNewQuestion() string {
 				fmt.Println(". Retry of query...")
 				return queryAuthorForNewQuestion()
 			} else {
-				//TODO //cutting link
-				varStringQuestionAuthor = "*" + varStringQuestionAuthor
+				varStringQuestionAuthor = strings.Replace(
+					varStringQuestionAuthor, "https://vk.com/", "*", 1)
 				return varStringQuestionAuthor
 			}
 		} else {
