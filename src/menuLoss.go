@@ -144,7 +144,7 @@ func exportLossInFile() {
 
 	varBytesListLoss := []byte(varStringListForExport)
 
-	_, err := os.Create("./src/output/loss.txt")
+	_, err := os.Create("./output/loss.txt")
 
 	if err != nil {
 		fmt.Println("COMPUTER: ...")
@@ -154,7 +154,7 @@ func exportLossInFile() {
 		showListLoss()
 	}
 
-	err = ioutil.WriteFile("./src/output/loss.txt", varBytesListLoss, 0)
+	err = ioutil.WriteFile("./output/loss.txt", varBytesListLoss, 0)
 
 	if err != nil {
 		fmt.Println("COMPUTER: ...")
@@ -192,7 +192,7 @@ func clearJSONFileLoss() {
 		clearJSONFileLoss()
 	} else {
 		if varIntUserAnswer == 1 {
-			ioutil.WriteFile("./src/json/loss.json", nil, 0)
+			ioutil.WriteFile("./json/loss.json", nil, 0)
 			fmt.Println("COMPUTER: [.. -> List loss -> Cleaning JSON file] Cleaning " +
 				"successfully completed. Return to list loss.")
 		} else {
@@ -239,7 +239,7 @@ func AddLoss() {
 }
 
 func readJSONFileLoss() []loss {
-	varStringJSON, err := ioutil.ReadFile("./src/json/loss.json")
+	varStringJSON, err := ioutil.ReadFile("./json/loss.json")
 
 	if err != nil {
 		fmt.Print("COMPUTER: Error, ")
@@ -280,7 +280,7 @@ func writeToJSONFileLoss(arrayLoss []loss, varLossNewNote loss) {
 				fmt.Println(". Retry of query...")
 				writeToJSONFileLoss(arrayLoss, varLossNewNote)
 			} else {
-				err := ioutil.WriteFile("./src/json/loss.json", varBytesLoss, 0)
+				err := ioutil.WriteFile("./json/loss.json", varBytesLoss, 0)
 
 				if err != nil {
 					fmt.Println("COMPUTER: ...")
@@ -442,7 +442,8 @@ func queryAuthorForNewLoss() string {
 				return queryAuthorForNewLoss()
 			} else {
 				varStringLossAuthor = strings.Replace(
-					varStringLossAuthor, "https://vk.com/", "*", 1)
+					varStringLossAuthor, "https://vk.com/", "@", 1)
+				varStringLossAuthor += " (Автор)";
 				return varStringLossAuthor
 			}
 		} else {

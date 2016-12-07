@@ -144,7 +144,7 @@ func exportQuestionsInFile() {
 
 	varBytesListQuestions := []byte(varStringListForExport)
 
-	_, err := os.Create("./src/output/questions.txt")
+	_, err := os.Create("./output/questions.txt")
 
 	if err != nil {
 		fmt.Println("COMPUTER: ...")
@@ -154,7 +154,7 @@ func exportQuestionsInFile() {
 		showListQuestions()
 	}
 
-	err = ioutil.WriteFile("./src/output/questions.txt", varBytesListQuestions, 0)
+	err = ioutil.WriteFile("./output/questions.txt", varBytesListQuestions, 0)
 
 	if err != nil {
 		fmt.Println("COMPUTER: ...")
@@ -192,7 +192,7 @@ func clearJSONFileQuestions() {
 		clearJSONFileQuestions()
 	} else {
 		if varIntUserAnswer == 1 {
-			ioutil.WriteFile("./src/json/questions.json", nil, 0)
+			ioutil.WriteFile("./json/questions.json", nil, 0)
 			fmt.Println("COMPUTER: [.. -> List questions -> Cleaning JSON file] Cleaning " +
 				"successfully completed. Return to list questions.")
 		} else {
@@ -239,7 +239,7 @@ func AddQuestion() {
 }
 
 func readJSONFileQuestions() []question {
-	varStringJSON, err := ioutil.ReadFile("./src/json/questions.json")
+	varStringJSON, err := ioutil.ReadFile("./json/questions.json")
 
 	if err != nil {
 		fmt.Println("COMPUTER: ...")
@@ -281,7 +281,7 @@ func writeToJSONFileQuestions(arrayQuestions []question, varQuestionNewNote ques
 				fmt.Println(". Retry of query...")
 				writeToJSONFileQuestions(arrayQuestions, varQuestionNewNote)
 			} else {
-				err := ioutil.WriteFile("./src/json/questions.json", varBytesQuestions, 0)
+				err := ioutil.WriteFile("./json/questions.json", varBytesQuestions, 0)
 
 				if err != nil {
 					fmt.Println("COMPUTER: ...")
@@ -443,7 +443,8 @@ func queryAuthorForNewQuestion() string {
 				return queryAuthorForNewQuestion()
 			} else {
 				varStringQuestionAuthor = strings.Replace(
-					varStringQuestionAuthor, "https://vk.com/", "*", 1)
+					varStringQuestionAuthor, "https://vk.com/", "@", 1)
+				varStringQuestionAuthor += " (Автор)";
 				return varStringQuestionAuthor
 			}
 		} else {
