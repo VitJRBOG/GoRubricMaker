@@ -6,6 +6,13 @@ public class MainClass {
     }
 
     private void Starter() {
+        ClassMainMenu objClassMainMenu =
+                new ClassMainMenu();
+        objClassMainMenu.MainMenu();
+    }
 
+    void Exit() {
+        System.out.println("COMPUTER: Exit from program...");
+        System.exit(0);
     }
 }
