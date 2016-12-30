@@ -10,7 +10,7 @@ class ClassMainMenu {
         Scanner objScanner =
                 new Scanner(System.in);
 
-        System.out.println("USER: [Main menu -> ] ");
+        System.out.print("USER: [Main menu -> ] ");
         String varStringUserAnswer = objScanner.nextLine();
 
         if (varStringUserAnswer.equals("0")) {
