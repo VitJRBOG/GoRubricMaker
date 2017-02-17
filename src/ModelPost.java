@@ -47,7 +47,12 @@ class ModelPost {
         return arrayStringPhoto;
     }
     String getAuthor() {
-        this.varStringAuthor = "@" + varStringLinkAuthor + " (" + varStringNameAuthor + ")";
+        if (!(varStringLinkAuthor.equals("")) &&
+                !(varStringNameAuthor.equals(""))) {
+            this.varStringAuthor = "@" + varStringLinkAuthor + " (" + varStringNameAuthor + ")";
+        } else {
+            this.varStringAuthor = "";
+        }
         return varStringAuthor;
     }
 

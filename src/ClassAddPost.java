@@ -1,7 +1,11 @@
-import jdk.nashorn.internal.ir.debug.JSONWriter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.FileSystemNotFoundException;
 import java.util.Scanner;
 
 class ClassAddPost {
@@ -23,10 +27,12 @@ class ClassAddPost {
             objClassMainMenu.MainMenu();
         } else {
             if (varStringUserAnswer.equals("1")) {
-                operationAddQuestion();
+                JSONArray objJSONArray = readJSONFile("questions");
+                operationAddQuestion(objJSONArray);
             } else {
                 if (varStringUserAnswer.equals("2")) {
-                    operationAddLoss();
+                    JSONArray objJSONArray = readJSONFile("loss");
+                    operationAddLoss(objJSONArray);
                 } else {
                     System.out.println("COMPUTER: Unknown operation. Retry query...");
                     MenuAddPost();
@@ -36,35 +42,125 @@ class ClassAddPost {
 
     }
 
-    private void operationAddQuestion() {
-        String varStringTypeOfPost = "question";
+    private void operationAddQuestion(JSONArray objJSONArray) {
+        String varStringTypeOfPost = "questions";
 
         ModelPost objModelPost =
                 new ModelPost();
+
+        int varIntArraySize = objJSONArray.size();
+
+        objModelPost.setCategoryNumber(1);
+        objModelPost.setPostNumber(varIntArraySize + 1);
 
         objModelPost = setBody(objModelPost, varStringTypeOfPost);
         objModelPost = setPhoto(objModelPost, varStringTypeOfPost);
         objModelPost = setAuthor(objModelPost, varStringTypeOfPost);
 
-        writingPostToJSON(objModelPost, varStringTypeOfPost);
+        writingPostToJSON(objModelPost, varStringTypeOfPost, objJSONArray);
     }
 
-    private void operationAddLoss() {
+    private void operationAddLoss(JSONArray objJSONArray) {
         String varStringTypeOfPost = "loss";
 
         ModelPost objModelPost =
                 new ModelPost();
 
+        int varIntArraySize = objJSONArray.size();
+
+        objModelPost.setCategoryNumber(2);
+        objModelPost.setPostNumber(varIntArraySize + 1);
+
         objModelPost = setBody(objModelPost, varStringTypeOfPost);
         objModelPost = setPhoto(objModelPost, varStringTypeOfPost);
         objModelPost = setAuthor(objModelPost, varStringTypeOfPost);
 
-        writingPostToJSON(objModelPost, varStringTypeOfPost);
+        writingPostToJSON(objModelPost, varStringTypeOfPost, objJSONArray);
     }
 
-    private void writingPostToJSON(ModelPost objModelPost, String varStringTypeOfPost) {
+    private JSONArray readJSONFile(String varStringTypeOfPost) {
+        JSONArray objJSONArray =
+                new JSONArray();
 
+        String varString = "";
 
+        try {
+            Scanner objScanner =
+                    new Scanner(new File("output/" + varStringTypeOfPost + ".json"));
+            varString = objScanner.next();
+            objScanner.close();
+
+            System.out.println(varString);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("COMPUTER: Error. File \"" + varStringTypeOfPost + ".json\" not found. " +
+                    "Return to Menu Add Post...");
+        }
+
+        if (varString.length() > 5) {
+            try {
+                JSONParser objJSONParser =
+                        new JSONParser();
+
+                objJSONArray = (JSONArray) objJSONParser.parse(
+                        new FileReader("output/" + varStringTypeOfPost + ".json"));
+
+            } catch (IOException | ParseException | FileSystemNotFoundException | ClassCastException e) {
+                e.printStackTrace();
+                System.out.println("COMPUTER: Error of reading file \"" + varStringTypeOfPost + ".json\". " +
+                        "Return to Menu Add Post...");
+            }
+        }
+
+        return objJSONArray;
+    }
+
+    private void writingPostToJSON(ModelPost objModelPost, String varStringTypeOfPost, JSONArray objJSONArray) {
+
+        JSONObject objJSONObjectNew =
+                new JSONObject();
+
+        int varIntArraySize = objJSONArray.size();
+
+        objJSONObjectNew.put("id", varIntArraySize + 1);
+        objJSONObjectNew.put("body", objModelPost.getBody());
+
+        String[] arrayStringContent = objModelPost.getPhoto();
+
+        JSONArray objJSONArrayPhoto =
+                new JSONArray();
+
+        for (String varString : arrayStringContent) {
+            objJSONArrayPhoto.add(varString);
+        }
+
+        objJSONObjectNew.put("photo", objJSONArrayPhoto);
+        objJSONObjectNew.put("author", objModelPost.getAuthor());
+
+        try {
+            FileWriter objFileWriter =
+                    new FileWriter("output/" + varStringTypeOfPost + ".json");
+            objFileWriter.write("");
+            if (objModelPost.getPostNumber() > 1) {
+                String varStringJSONArray = objJSONArray.toJSONString();
+
+                if (varStringJSONArray.charAt(0) == '[' &&
+                        varStringJSONArray.charAt(varStringJSONArray.length() - 1) == ']') {
+                    varStringJSONArray = varStringJSONArray.substring(1, varStringJSONArray.length() - 1);
+                }
+
+                objFileWriter.write("[" + varStringJSONArray + ", " +
+                        objJSONObjectNew.toJSONString() + "]");
+            } else {
+                objFileWriter.write("[" + objJSONObjectNew.toJSONString() + "]");
+            }
+            objFileWriter.flush();
+            objFileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("COMPUTER: Error of writing file \"" + varStringTypeOfPost + ".json\". " +
+                    "Return to Menu Add Post...");
+        }
 
         MenuAddPost();
     }
@@ -85,10 +181,10 @@ class ClassAddPost {
             try {
                 MainClass.TextTransfer objTextTransfer =
                         new MainClass.TextTransfer();
-                objModelPost.setBody(objTextTransfer.getData());
+                objModelPost.setBody(objModelPost.getNumber() + "" + objTextTransfer.getData());
 
                 System.out.println("COMPUTER: [.. Add " + varStringTypeOfPost + " -> Body] " + "\n" +
-                        objModelPost.getNumber() + objModelPost.getBody());
+                        objModelPost.getBody());
 
             } catch (IOException | UnsupportedFlavorException e) {
                 //e.printStackTrace();
@@ -222,7 +318,6 @@ class ClassAddPost {
 
                         System.out.println("COMPUTER: [.. Add " + varStringTypeOfPost + " -> Author] " +
                                 "\n" + objModelPost.getAuthor());
-
                     }
                     catch (IOException | UnsupportedFlavorException e) {
                         //e.printStackTrace();
