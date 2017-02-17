@@ -22,8 +22,12 @@ class ModelPost {
         this.arrayStringPhoto = arrayStringPhoto;
     }
     void setLinkAuthor(String varStringLinkAuthor) {
-        varStringLinkAuthor = varStringLinkAuthor.replace("https://vk.com/", "");
-        this.varStringLinkAuthor = varStringLinkAuthor;
+        if (!(varStringLinkAuthor.equals(""))) {
+            varStringLinkAuthor = varStringLinkAuthor.replace("https://vk.com/", "");
+            this.varStringLinkAuthor = varStringLinkAuthor;
+        } else {
+            this.varStringLinkAuthor = varStringLinkAuthor;
+        }
     }
     void setNameAuthor(String varStringNameAuthor) {
         this.varStringNameAuthor = varStringNameAuthor;

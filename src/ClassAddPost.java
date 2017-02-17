@@ -12,8 +12,8 @@ class ClassAddPost {
 
     void MenuAddPost() {
         System.out.println("COMPUTER: [Main menu -> Add post -> ..] 1 == Add question.");
-        System.out.println("COMPUTER: [Main menu -> Add post  -> ..] 2 == Add loss.");
-        System.out.println("COMPUTER: [Main menu -> Add post  -> ..] 0 == Step back.");
+        System.out.println("COMPUTER: [Main menu -> Add post -> ..] 2 == Add loss.");
+        System.out.println("COMPUTER: [Main menu -> Add post -> ..] 0 == Step back.");
 
         Scanner objScanner =
                 new Scanner(System.in);
@@ -57,7 +57,7 @@ class ClassAddPost {
         objModelPost = setPhoto(objModelPost, varStringTypeOfPost);
         objModelPost = setAuthor(objModelPost, varStringTypeOfPost);
 
-        writingPostToJSON(objModelPost, varStringTypeOfPost, objJSONArray);
+        askForWriting(objModelPost, varStringTypeOfPost, objJSONArray);
     }
 
     private void operationAddLoss(JSONArray objJSONArray) {
@@ -75,7 +75,7 @@ class ClassAddPost {
         objModelPost = setPhoto(objModelPost, varStringTypeOfPost);
         objModelPost = setAuthor(objModelPost, varStringTypeOfPost);
 
-        writingPostToJSON(objModelPost, varStringTypeOfPost, objJSONArray);
+        askForWriting(objModelPost, varStringTypeOfPost, objJSONArray);
     }
 
     private JSONArray readJSONFile(String varStringTypeOfPost) {
@@ -86,11 +86,9 @@ class ClassAddPost {
 
         try {
             Scanner objScanner =
-                    new Scanner(new File("output/" + varStringTypeOfPost + ".json"));
+                    new Scanner(new File("json/" + varStringTypeOfPost + ".json"));
             varString = objScanner.next();
             objScanner.close();
-
-            System.out.println(varString);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("COMPUTER: Error. File \"" + varStringTypeOfPost + ".json\" not found. " +
@@ -103,7 +101,7 @@ class ClassAddPost {
                         new JSONParser();
 
                 objJSONArray = (JSONArray) objJSONParser.parse(
-                        new FileReader("output/" + varStringTypeOfPost + ".json"));
+                        new FileReader("json/" + varStringTypeOfPost + ".json"));
 
             } catch (IOException | ParseException | FileSystemNotFoundException | ClassCastException e) {
                 e.printStackTrace();
@@ -113,6 +111,45 @@ class ClassAddPost {
         }
 
         return objJSONArray;
+    }
+
+    private void askForWriting(ModelPost objModelPost, String varStringTypeOfPost, JSONArray objJSONArray) {
+        System.out.println("COMPUTER: [Main menu -> Add post -> Add questions]");
+
+        System.out.println(objModelPost.getBody());
+
+        try {
+            String[] arrayStringPhoto = objModelPost.getPhoto();
+
+            for (String varString : arrayStringPhoto) {
+                System.out.println(varString);
+            }
+        } catch (NullPointerException e) {
+            //e.printStackTrace();
+        }
+
+        System.out.println(objModelPost.getAuthor());
+
+        System.out.println("COMPUTER: [Main menu -> Add post -> Add " + varStringTypeOfPost +"] " +
+                "Write this to file \"" + varStringTypeOfPost +".json\"? (1/0)");
+
+        System.out.print("USER: [.. -> .. -> Add " + varStringTypeOfPost + "] ");
+
+        Scanner objScanner =
+                new Scanner(System.in);
+        String varStringUsersAnswer = objScanner.nextLine();
+
+        if (varStringUsersAnswer.equals("1")) {
+            writingPostToJSON(objModelPost, varStringTypeOfPost, objJSONArray);
+        } else {
+            if (varStringUsersAnswer.equals("0")) {
+                System.out.println("COMPUTER: Cancel of writing. Return to Menu Add Post...");
+                MenuAddPost();
+            } else {
+                System.out.println("COMPUTER: Unknown operation. Retry query...");
+                askForWriting(objModelPost, varStringTypeOfPost, objJSONArray);
+            }
+        }
     }
 
     private void writingPostToJSON(ModelPost objModelPost, String varStringTypeOfPost, JSONArray objJSONArray) {
@@ -125,21 +162,28 @@ class ClassAddPost {
         objJSONObjectNew.put("id", varIntArraySize + 1);
         objJSONObjectNew.put("body", objModelPost.getBody());
 
-        String[] arrayStringContent = objModelPost.getPhoto();
+        try {
+            String[] arrayStringContent = objModelPost.getPhoto();
 
-        JSONArray objJSONArrayPhoto =
-                new JSONArray();
+            JSONArray objJSONArrayPhoto =
+                    new JSONArray();
 
-        for (String varString : arrayStringContent) {
-            objJSONArrayPhoto.add(varString);
+            for (String varString : arrayStringContent) {
+                objJSONArrayPhoto.add(varString);
+            }
+
+            objJSONObjectNew.put("photo", objJSONArrayPhoto);
+        } catch (NullPointerException e) {
+            //e.printStackTrace();
+            objJSONObjectNew.put("photo", "");
         }
 
-        objJSONObjectNew.put("photo", objJSONArrayPhoto);
+
         objJSONObjectNew.put("author", objModelPost.getAuthor());
 
         try {
             FileWriter objFileWriter =
-                    new FileWriter("output/" + varStringTypeOfPost + ".json");
+                    new FileWriter("json/" + varStringTypeOfPost + ".json");
             objFileWriter.write("");
             if (objModelPost.getPostNumber() > 1) {
                 String varStringJSONArray = objJSONArray.toJSONString();
@@ -161,6 +205,8 @@ class ClassAddPost {
             System.out.println("COMPUTER: Error of writing file \"" + varStringTypeOfPost + ".json\". " +
                     "Return to Menu Add Post...");
         }
+
+        System.out.println("COMPUTER: Post was successfully written. Return to Menu Add Post.");
 
         MenuAddPost();
     }
@@ -218,7 +264,8 @@ class ClassAddPost {
                     try {
 
                         arrayStringPhoto =
-                                new String[varIntUserAnswer];
+                                new String[varIntUserAnswer + 1];
+                        arrayStringPhoto[0] = "Фото:";
 
                         MainClass.TextTransfer objTextTransfer =
                                 new MainClass.TextTransfer();
@@ -226,10 +273,10 @@ class ClassAddPost {
                         System.out.println("COMPUTER: [.. -> Add " + varStringTypeOfPost + " -> Photo] " +
                                 "Copy link to photo and press Enter. Enter \"00\" for cancel.");
 
-                        for (int i = 0; i < arrayStringPhoto.length; i++) {
+                        for (int i = 1; i < arrayStringPhoto.length; i++) {
 
                             System.out.print("USER: [.. -> Add " + varStringTypeOfPost +
-                                    " -> Photo -> №" + (i + 1) + "] ");
+                                    " -> Photo -> №" + i + "] ");
                             varStringUserAnswer = objScanner.nextLine();
 
                             if (varStringUserAnswer.equals("00")) {

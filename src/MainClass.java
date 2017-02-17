@@ -26,12 +26,12 @@ public class MainClass {
 
     private static void FileCreator(String varStringFileName) {
         try {
-            File objFile = new File("output/" + varStringFileName);
+            File objFile = new File("json/" + varStringFileName);
 
             if (!(objFile.exists())) {
                 if (objFile.createNewFile()) {
                     OutputStreamWriter varObjWriter = new OutputStreamWriter(
-                            new FileOutputStream("output/" + varStringFileName), "UTF-8");
+                            new FileOutputStream("json/" + varStringFileName), "UTF-8");
                     varObjWriter.write("{}");
                     varObjWriter.close();
 
@@ -55,7 +55,7 @@ public class MainClass {
                     new org.json.simple.parser.JSONParser();
 
             objJSONParser.parse(
-                    new FileReader("output/" + varStringTypeOfPost + ".json"));
+                    new FileReader("json/" + varStringTypeOfPost + ".json"));
 
         } catch (IOException | ParseException | FileSystemNotFoundException e) {
             //e.printStackTrace();
