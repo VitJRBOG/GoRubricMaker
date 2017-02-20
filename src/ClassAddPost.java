@@ -93,6 +93,7 @@ class ClassAddPost {
             e.printStackTrace();
             System.out.println("COMPUTER: Error. File \"" + varStringTypeOfPost + ".json\" not found. " +
                     "Return to Menu Add Post...");
+            MenuAddPost();
         }
 
         if (varString.length() > 5) {
@@ -107,6 +108,7 @@ class ClassAddPost {
                 e.printStackTrace();
                 System.out.println("COMPUTER: Error of reading file \"" + varStringTypeOfPost + ".json\". " +
                         "Return to Menu Add Post...");
+                MenuAddPost();
             }
         }
 
@@ -115,6 +117,8 @@ class ClassAddPost {
 
     private void askForWriting(ModelPost objModelPost, String varStringTypeOfPost, JSONArray objJSONArray) {
         System.out.println("COMPUTER: [Main menu -> Add post -> Add questions]");
+
+        System.out.println("");
 
         System.out.println(objModelPost.getBody());
 
@@ -129,6 +133,8 @@ class ClassAddPost {
         }
 
         System.out.println(objModelPost.getAuthor());
+
+        System.out.println("");
 
         System.out.println("COMPUTER: [Main menu -> Add post -> Add " + varStringTypeOfPost +"] " +
                 "Write this to file \"" + varStringTypeOfPost +".json\"? (1/0)");

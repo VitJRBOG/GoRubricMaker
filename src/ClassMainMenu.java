@@ -5,6 +5,7 @@ class ClassMainMenu {
     void MainMenu() {
         System.out.println("COMPUTER: [Main menu -> ..] 1 == Add post.");
         System.out.println("COMPUTER: [Main menu -> ..] 2 == Show lists.");
+        System.out.println("COMPUTER: [Main menu -> ..] 3 == File manager.");
         System.out.println("COMPUTER: [Main menu -> ..] 0 == Close program.");
 
         Scanner objScanner =
@@ -28,8 +29,14 @@ class ClassMainMenu {
                             new ClassShowLists();
                     objClassShowLists.MenuShowLists();
                 } else {
-                    System.out.println("COMPUTER: Unknown operation. Retry query...");
-                    MainMenu();
+                    if (varStringUserAnswer.equals("3")) {
+                        ClassMenuFileManager objClassMenuFileManager =
+                                new ClassMenuFileManager();
+                        objClassMenuFileManager.MenuFileManager();
+                    } else {
+                        System.out.println("COMPUTER: Unknown operation. Retry query...");
+                        MainMenu();
+                    }
                 }
             }
         }
