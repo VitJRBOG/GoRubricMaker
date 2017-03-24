@@ -17,6 +17,7 @@ def starter():
 
 def main_menu():
     print(
+        "\n" +
         "COMPUTER: You are in Main menu...")
     print(
         "COMPUTER [Main menu -> ]: 1 == Add post.")
@@ -57,7 +58,8 @@ class Post:
     var_number_post = 0
     var_body = ""
     var_photo = ""
-    var_author = ""
+    var_author_url = ""
+    var_author_name = ""
 
     def set_var_number_category(self, var_number_category_inner):
         self.var_number_category = var_number_category_inner
@@ -71,8 +73,11 @@ class Post:
     def set_list_photo(self, var_photo_inner):
         self.var_photo = var_photo_inner
 
-    def set_var_author(self, var_author_inner):
-        self.var_author = var_author_inner
+    def set_var_author_url(self, var_author_url_outher):
+        self.var_author_url = var_author_url_outher
+
+    def set_var_author_name(self, var_author_name_outher):
+        self.var_author_name = var_author_name_outher
 
     def get_var_number_category(self):
         return self.var_number_category
@@ -90,7 +95,15 @@ class Post:
         return self.var_photo
 
     def get_var_author(self):
-        return self.var_author
+        var_author_url = self.var_author_url[self.var_author_url.rfind('/'):]
+        var_author = "*" + var_author_url + " (" + self.var_author_name + ")"
+        return var_author
+
+    def get_var_author_url(self):
+        return self.var_author_url
+
+    def get_var_author_name(self):
+        return self.var_author_name
 
     def __init__(self):
         self.var_number_category = 0
@@ -105,7 +118,8 @@ def add_post():
     def set_number_post(post_type, obj_post):
 
         print(
-            "COMPUTER [Main menu -> Add post -> Add " + post_type + "]: Here is empty. " +
+            "COMPUTER [Main menu -> Add post -> Add " + post_type + " -> Number post]: " +
+            "Here is empty. " +
             "Return to menu Add post...")
 
         return obj_post
@@ -115,13 +129,15 @@ def add_post():
         try:
 
             print(
+                "\n" +
                 "COMPUTER [Main menu -> Add post -> Add " + post_type +
                 " -> Body]: Copy text for post and press \"Enter\", or enter \"00\" for cancel.")
 
             user_answer = raw_input("USER [.. -> Add " + post_type + " -> Body]: ")
 
             if user_answer == "00":
-                add_post
+                "COMPUTER: Cancel..."
+                add_post()
             else:
                 cb = gtk.clipboard_get()
 
@@ -138,7 +154,7 @@ def add_post():
         except Exception as var_except:
             print(
                 "COMPUTER [Main menu -> Add post -> Add " + post_type +
-                " -> Body: Error, " + str(var_except) +
+                " -> Body]: Error, " + str(var_except) +
                 ". Return to menu Add post...")
             add_post()
 
@@ -147,6 +163,7 @@ def add_post():
         try:
 
             print(
+                "\n" +
                 "COMPUTER [Main menu -> Add post -> Add " + post_type +
                 " -> Photo]: Enter count photo and press \"Enter\", or enter \"00\" for cancel.")
 
@@ -155,7 +172,8 @@ def add_post():
             user_answer = raw_input("USER [.. -> Add " + post_type + " -> Photo]: ")
 
             if user_answer == "00":
-                main_menu
+                "COMPUTER: Cancelling..."
+                main_menu()
             else:
                 if user_answer == "0":
                     return obj_post
@@ -190,7 +208,7 @@ def add_post():
                     else:
                         print(
                             "COMPUTER [Main menu -> Add post -> Add " + post_type +
-                            "]: Unknown value. Retry query...")
+                            ". Photo]: Unknown value. Retry query...")
                         return set_photo
 
             return obj_post
@@ -198,13 +216,14 @@ def add_post():
         except Exception as var_except:
             print(
                 "COMPUTER [Main menu -> Add post -> Add " + post_type +
-                "]: Error, " + str(var_except) +
-                ". Return to menu Add post...")
-            add_post()
+                " -> Photo]: Error, " + str(var_except) +
+                ". Retry query...")
+            return set_photo(post_type, obj_post)
 
     def set_author(post_type, obj_post):
 
         print(
+            "\n" +
             "COMPUTER [Main menu -> Add post -> Add " + post_type +
             " -> Author]: Enter \"1\", if need signature, or \"0\", if not. " +
             "Enter \"00\" for cancel.")
@@ -212,6 +231,7 @@ def add_post():
         user_answer = raw_input("USER [.. -> Add " + post_type + " -> Author]: ")
 
         if user_answer == "00":
+            "COMPUTER: Cancel..."
             add_post()
         else:
             if user_answer == "0":
@@ -219,11 +239,63 @@ def add_post():
             else:
                 if user_answer == "1":
                     try:
-                    except:
+                        cb = gtk.clipboard_get()
+
+                        print(
+                            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                            "-> Author -> URL] Copy link to author's page and press \"Enter\". " +
+                            "Enter \"00\" for cancel.")
+
+                        user_answer = raw_input("USER [.. -> Author -> URL] ")
+
+                        url = ""
+
+                        if user_answer == "00":
+                            add_post()
+                        else:
+                            url = str(gtk.Clipboard.wait_for_text(cb))
+                            url = url.decode("utf8")
+
+                            print(
+                                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                                "-> Author -> URL] " + url)
+
+                            print(
+                                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                                "-> Author -> Full name] " +
+                                "Copy author's full name and press \"Enter\". " +
+                                "Enter \"00\" for cancel.")
+
+                            user_answer = raw_input("USER [.. -> Author -> Full name] ")
+
+                            name = ""
+
+                            if user_answer == "00":
+                                "COMPUTER: Cancel..."
+                                add_post()
+                            else:
+                                name = str(gtk.Clipboard.wait_for_text(cb))
+                                name = name.decode("utf8")
+
+                                print(
+                                    "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                                    "-> Author -> Full name] " + name)
+
+                            obj_post.set_var_author_url(url)
+                            obj_post.set_var_author_name(name)
+
+                        return obj_post
+
+                    except Exception as var_except:
+                        print(
+                            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                            " -> Author]: Error, " + str(var_except) +
+                            ". Return to menu Add post...")
+                        add_post()
                 else:
                     print(
-                    "COMPUTER [Main menu -> Add post -> Add " + post_type +
-                    "]: Unknown value. Retry query...")
+                        "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                        "]: Unknown value. Retry query...")
                     return set_author(post_type, obj_post)
 
         print(
@@ -238,14 +310,15 @@ def add_post():
             "Return to menu Add post...")
         add_post()
 
+    print("\n")
     print(
         "COMPUTER: You are in menu Add post...")
     print(
-        "COMPUTER [Main menu -> ]: 1 == Add question.")
+        "COMPUTER [Main menu -> Add post -> ]: 1 == Add question.")
     print(
-        "COMPUTER [Main menu -> ]: 2 == Add loss.")
+        "COMPUTER [Main menu -> Add post -> ]: 2 == Add loss.")
     print(
-        "COMPUTER [Main menu -> ]: 0 == Step back.")
+        "COMPUTER [Main menu -> Add post -> ]: 0 == Step back.")
 
     post_type = ""
 
@@ -262,14 +335,14 @@ def add_post():
                     main_menu()
                 else:
                     print(
-                        "COMPUTER [Main menu] Unknown command. " +
+                        "COMPUTER [Main menu -> Add post] Unknown command. " +
                         "Retry query...")
                     add_post()
 
     except Exception as var_except:
         print(
-            "COMPUTER [Main menu]: Error, " + str(var_except) +
-            ". Retry query...")
+            "COMPUTER [Main menu -> Add post]: Error, " + str(var_except) +
+            ". Return to menu Add post...")
         add_post()
 
     obj_post = Post()
