@@ -1,6 +1,9 @@
 # coding: utf8
 
 
+import gtk
+
+
 def starter():
     try:
         open("json/questions.json", 'w')
@@ -65,7 +68,7 @@ class Post:
     def set_var_body(self, var_body_inner):
         self.var_body = var_body_inner
 
-    def set_var_photo(self, var_photo_inner):
+    def set_list_photo(self, var_photo_inner):
         self.var_photo = var_photo_inner
 
     def set_var_author(self, var_author_inner):
@@ -78,12 +81,12 @@ class Post:
         return self.var_number_post
 
     def get_var_body(self):
-        var_body_this = str(self.var_number_category) + "." +\
-                        str(self.var_number_post) + ") " +\
-                        self.var_body
+        var_body_this = str(self.var_number_category) + "." + \
+            str(self.var_number_post) + ") " + \
+            self.var_body
         return var_body_this
 
-    def get_var_photo(self):
+    def get_list_photo(self):
         return self.var_photo
 
     def get_var_author(self):
@@ -98,6 +101,143 @@ class Post:
 
 
 def add_post():
+
+    def set_number_post(post_type, obj_post):
+
+        print(
+            "COMPUTER [Main menu -> Add post -> Add " + post_type + "]: Here is empty. " +
+            "Return to menu Add post...")
+
+        return obj_post
+
+    def set_body(post_type, obj_post):
+
+        try:
+
+            print(
+                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                " -> Body]: Copy text for post and press \"Enter\", or enter \"00\" for cancel.")
+
+            user_answer = raw_input("USER [.. -> Add " + post_type + " -> Body]: ")
+
+            if user_answer == "00":
+                add_post
+            else:
+                cb = gtk.clipboard_get()
+
+                text = str(gtk.Clipboard.wait_for_text(cb))
+
+                obj_post.set_var_body(text.decode("utf8"))
+
+                print("\n")
+                print(obj_post.get_var_body())
+                print("\n")
+
+                return obj_post
+
+        except Exception as var_except:
+            print(
+                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                " -> Body: Error, " + str(var_except) +
+                ". Return to menu Add post...")
+            add_post()
+
+    def set_photo(post_type, obj_post):
+
+        try:
+
+            print(
+                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                " -> Photo]: Enter count photo and press \"Enter\", or enter \"00\" for cancel.")
+
+            list_photo = ""
+
+            user_answer = raw_input("USER [.. -> Add " + post_type + " -> Photo]: ")
+
+            if user_answer == "00":
+                main_menu
+            else:
+                if user_answer == "0":
+                    return obj_post
+                else:
+                    if int(user_answer) > 0 and int(user_answer) <= 10:
+                        photo_count = int(user_answer)
+                        list_photo[photo_count + 1]
+                        list_photo[0] = "Фото:"
+
+                        cb = gtk.clipboard_get()
+
+                        for i, nothing in enumerate(list_photo):
+
+                            if i >= 1:
+
+                                print(
+                                    "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                                    " -> Photo №" + str(i) + "]: Copy URL and press \"Enter\".")
+
+                                raw_input("USER [.. -> Add photo -> Photo №" + str(i) + "]: ")
+
+                                url = str(gtk.Clipboard.wait_for_text(cb))
+                                url = url.decode("utf8")
+
+                                print(
+                                    "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                                    " -> Photo -> №1]: " + str(url))
+
+                                list_photo[i] = "- " + url
+
+                                obj_post.set_photo(list_photo)
+                    else:
+                        print(
+                            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                            "]: Unknown value. Retry query...")
+                        return set_photo
+
+            return obj_post
+
+        except Exception as var_except:
+            print(
+                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                "]: Error, " + str(var_except) +
+                ". Return to menu Add post...")
+            add_post()
+
+    def set_author(post_type, obj_post):
+
+        print(
+            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+            " -> Author]: Enter \"1\", if need signature, or \"0\", if not. " +
+            "Enter \"00\" for cancel.")
+
+        user_answer = raw_input("USER [.. -> Add " + post_type + " -> Author]: ")
+
+        if user_answer == "00":
+            add_post()
+        else:
+            if user_answer == "0":
+                return obj_post
+            else:
+                if user_answer == "1":
+                    try:
+                    except:
+                else:
+                    print(
+                    "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                    "]: Unknown value. Retry query...")
+                    return set_author(post_type, obj_post)
+
+        print(
+            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+            " -> Author]: Copy text for post and press \"Enter\".")
+
+        add_post()
+
+    def write_post(post_type, obj_post):
+        print(
+            "COMPUTER [Main menu -> Add post -> Add " + post_type + "]: Here is empty.  " +
+            "Return to menu Add post...")
+        add_post()
+
     print(
         "COMPUTER: You are in menu Add post...")
     print(
@@ -110,7 +250,7 @@ def add_post():
     post_type = ""
 
     try:
-        user_answer = raw_input("USER [.. -> Add post ->]: ")
+        user_answer = raw_input("USER [.. -> Add post -> ]: ")
 
         if user_answer == "1":
             post_type = "questions"
@@ -125,11 +265,12 @@ def add_post():
                         "COMPUTER [Main menu] Unknown command. " +
                         "Retry query...")
                     add_post()
+
     except Exception as var_except:
         print(
             "COMPUTER [Main menu]: Error, " + str(var_except) +
-            ". Return to Main menu...")
-        main_menu()
+            ". Retry query...")
+        add_post()
 
     obj_post = Post()
 
@@ -145,9 +286,11 @@ def add_post():
                 ". Return to Main menu...")
             main_menu()
 
-    obj_post.set_var_body(add_post_set_body(post_type, obj_post))
-    obj_post.set_var_photo(add_post_set_photo(post_type, obj_post))
-    obj_post.set_var_author(add_post_set_author(post_type, obj_post))
+    obj_post = set_body(post_type, obj_post)
+    obj_post = set_photo(post_type, obj_post)
+    obj_post = set_author(post_type, obj_post)
+
+    write_post(post_type, obj_post)
 
     main_menu()
 
@@ -163,55 +306,6 @@ def file_manager():
     print(
         "COMPUTER [Main menu -> File manager]: Here is empty. " +
         "Return to Main menu...")
-    main_menu()
-
-
-def add_post_make_post():
-    print(
-        "COMPUTER [Main menu -> Add post -> Body]: Here is empty.  " +
-        "Return to Main menu...")
-    main_menu()
-
-
-def add_post_set_number_post(post_type, obj_post):
-
-    print(
-        "COMPUTER [Main menu -> Lists menu]: Here is empty. " +
-        "Return to Main menu...")
-
-    main_menu()
-
-
-def add_post_set_body(post_type, obj_post):
-
-    print(
-        "COMPUTER [Main menu -> Add post -> " + post_type +
-        " -> Body]: Copy text for post and press \"Enter\".")
-
-    raw_input("USER [.. -> " + post_type + " -> Body]: ")
-
-    main_menu()
-
-
-def add_post_set_photo(post_type, obj_post):
-
-    print(
-        "COMPUTER [Main menu -> Add post -> " + post_type +
-        " -> Photo]: Copy text for post and press \"Enter\".")
-
-    raw_input("USER [.. -> " + post_type + " -> Photo]: ")
-
-    main_menu()
-
-
-def add_post_set_author(post_type, obj_post):
-
-    print(
-        "COMPUTER [Main menu -> Add post -> " + post_type +
-        " -> Author]: Copy text for post and press \"Enter\".")
-
-    raw_input("USER [.. -> " + post_type + " -> Author]: ")
-
     main_menu()
 
 
