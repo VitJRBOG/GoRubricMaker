@@ -2,12 +2,19 @@
 
 
 import gtk
+import json
 
 
 def starter():
     try:
-        open("json/questions.json", 'w')
-        open("json/loss.json", 'w')
+        open("json/questions.json", 'r')
+        open("json/loss.json", 'r')
+    except IOError as var_except:
+        open("json/questions.json", 'r')
+        open("json/loss.json", 'r')
+        print(
+            "COMPUTER: Error, " + str(var_except) +
+            ". Was created files \"questions.json\" and \"loss.json\"")
     except Exception as var_except:
         print(
             "COMPUTER: Error, " + str(var_except) + ". Exit from program...")
@@ -86,17 +93,16 @@ class Post:
         return self.var_number_post
 
     def get_var_body(self):
-        var_body_this = str(self.var_number_category) + "." + \
-            str(self.var_number_post) + ") " + \
-            self.var_body
-        return var_body_this
+        return self.var_body
 
     def get_list_photo(self):
         return self.var_photo
 
     def get_var_author(self):
-        var_author_url = self.var_author_url[self.var_author_url.rfind('/'):]
-        var_author = "*" + var_author_url + " (" + self.var_author_name + ")"
+        var_author = ""
+        if self.var_author_url != "" and self.var_author_name != "":
+            var_author_url = self.var_author_url[self.var_author_url.rfind('/'):]
+            var_author = "*" + var_author_url + " (" + self.var_author_name + ")"
         return var_author
 
     def get_var_author_url(self):
@@ -110,19 +116,39 @@ class Post:
         self.var_number_post = 0
         self.var_body = ""
         self.var_photo = ""
-        self.var_author = ""
+        self.var_author_url = ""
+        self.var_author_name = ""
+
+
+def read_json(post_type):
+    try:
+        old_json = json.load(open("json/" + post_type + ".json", 'r'))
+        return old_json
+    except Exception as var_except:
+        print(
+            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+            " -> Read file]: Error, " + str(var_except) +
+            ". Return to menu Add post...")
+        add_post()
 
 
 def add_post():
 
-    def set_number_post(post_type, obj_post):
+    def set_number_post(post_type, obj_post, old_json):
+        try:
 
-        print(
-            "COMPUTER [Main menu -> Add post -> Add " + post_type + " -> Number post]: " +
-            "Here is empty. " +
-            "Return to menu Add post...")
+            old_json_map = json.loads(old_json)
 
-        return obj_post
+            obj_post.set_number_post(len(old_json_map) + 1)
+
+            return obj_post
+
+        except Exception as var_except:
+            print(
+                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                " -> Number post]: Error, " + str(var_except) +
+                ". Return to menu Add post...")
+            add_post()
 
     def set_body(post_type, obj_post):
 
@@ -146,7 +172,10 @@ def add_post():
                 obj_post.set_var_body(text.decode("utf8"))
 
                 print("\n")
-                print(obj_post.get_var_body())
+                print(
+                    str(obj_post.get_var_number_category()) + "." +
+                    str(obj_post.get_var_number_post()) + ") " +
+                    obj_post.get_var_body() + str())
                 print("\n")
 
                 return obj_post
@@ -304,10 +333,29 @@ def add_post():
 
         add_post()
 
-    def write_post(post_type, obj_post):
-        print(
-            "COMPUTER [Main menu -> Add post -> Add " + post_type + "]: Here is empty.  " +
-            "Return to menu Add post...")
+    def write_post(post_type, obj_post, old_json):
+
+        array_json = ""
+
+        if obj_post.get_list_photo() != "":
+            array_photo = obj_post.get_list_photo()
+
+            for i, var_photo in array_photo:
+                array_json = "[\"" + var_photo + "\","
+
+            array_json = array_json[0:len(array_json - 1)] + "]"
+
+        post_json = {
+            "category": obj_post.get_var_number_category(),
+            "num": obj_post.get_var_number_post(),
+            "body": obj_post.get_var_body(),
+            "photo": array_json,
+            "author": obj_post.get_var_author()}
+
+        obj_json = json.dumps(post_json)
+
+        print(obj_json)
+
         add_post()
 
     print("\n")
@@ -359,13 +407,14 @@ def add_post():
                 ". Return to Main menu...")
             main_menu()
 
+    old_json = read_json(post_type)
+
+    obj_post = set_number_post(post_type, obj_post, old_json)
     obj_post = set_body(post_type, obj_post)
     obj_post = set_photo(post_type, obj_post)
     obj_post = set_author(post_type, obj_post)
 
-    write_post(post_type, obj_post)
-
-    main_menu()
+    write_post(post_type, obj_post, old_json)
 
 
 def lists_menu():
