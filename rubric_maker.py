@@ -350,39 +350,65 @@ def add_post():
                     return set_author(post_type, obj_post)
 
         print(
-            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+            "COMPUTER [.. -> Add " + post_type +
             " -> Author]: Copy text for post and press \"Enter\".")
 
         add_post()
 
     def write_post(post_type, obj_post, old_json):
 
-        array_json = ""
+        print(
+            "\n" +
+            "COMPUTER [.. -> Add post -> Write post]: " +
+            "Write this to file \"questions.json\"? (1/0)")
 
-        if obj_post.get_list_photo() != "":
-            array_photo = obj_post.get_list_photo()
+        user_answer = raw_input("USER [.. -> Add post -> Write post]: ")
 
-            for i, var_photo in array_photo:
-                array_json = "[\"" + var_photo + "\","
+        if user_answer == '0':
+            print(
+                "COMPUTER [Main menu -> Add post -> Write post]: " +
+                "Cancel of writing. Return to menu Add post...")
+        else:
+            if user_answer == '1':
+                try:
 
-            array_json = array_json[0:len(array_json - 1)] + "]"
+                    post_json = {
+                        "category": obj_post.get_var_number_category(),
+                        "num": obj_post.get_var_number_post(),
+                        "body": obj_post.get_var_body(),
+                        "photo": obj_post.get_list_photo(),
+                        "author": obj_post.get_var_author()}
 
-        post_json = {
-            "category": obj_post.get_var_number_category(),
-            "num": obj_post.get_var_number_post(),
-            "body": obj_post.get_var_body(),
-            "photo": array_json,
-            "author": obj_post.get_var_author()}
+                    done_json = old_json
 
-        obj_json = json.dumps(post_json)
+                    done_json[int(post_json.get("num") - 1)] = post_json
 
-        print(obj_json)
+                    json_file = open("json/" + post_type + ".json", 'w')
+
+                    json_file.write(json.dumps(done_json, indent=4, ensure_ascii=False))
+
+                    json_file.close()
+
+                    print(
+                        "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                        " -> Write post] Post was successfully written. Return to menu Add Post.")
+
+                except Exception as var_except:
+                    print(
+                        "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                        " -> Write post]: Error, " + str(var_except) +
+                        ". Return to menu Add post...")
+            else:
+                print(
+                    "COMPUTER [Main menu -> Add post -> Write post]" +
+                    " Unknown command. Retry query...")
+                return write_post(post_type, obj_post, old_json)
 
         add_post()
 
-    print("\n")
     print(
-        "COMPUTER: You are in menu Add post...")
+        "\n" +
+        "COMPUTER [Main menu -> Add post]: You are in menu Add post...")
     print(
         "COMPUTER [Main menu -> Add post -> ]: 1 == Add question.")
     print(
