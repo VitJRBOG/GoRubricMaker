@@ -41,7 +41,7 @@ def starter():
 def main_menu():
     print(
         "\n" +
-        "COMPUTER: You are in Main menu...")
+        "COMPUTER [Main menu]: You are in Main menu...")
     print(
         "COMPUTER [Main menu -> ]: 1 == Add post.")
     print(
@@ -117,7 +117,7 @@ class Post:
     def get_var_author(self):
         var_author = ""
         if self.var_author_url != "" and self.var_author_name != "":
-            var_author_url = self.var_author_url[self.var_author_url.rfind('/'):]
+            var_author_url = self.var_author_url[self.var_author_url.rfind('/') + 1:]
             var_author = "*" + var_author_url + " (" + self.var_author_name + ")"
         return var_author
 
@@ -173,28 +173,26 @@ def add_post():
         try:
 
             print(
-                "\n" +
-                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                "COMPUTER [.. -> Add " + post_type +
                 " -> Body]: Copy text for post and press \"Enter\", or enter \"00\" for cancel.")
 
             user_answer = raw_input("USER [.. -> Add " + post_type + " -> Body]: ")
 
             if user_answer == "00":
-                "COMPUTER: Cancel..."
+                print("COMPUTER: Cancel...")
                 add_post()
             else:
                 cb = gtk.clipboard_get()
 
                 text = str(gtk.Clipboard.wait_for_text(cb))
 
-                obj_post.set_var_body(text.decode("utf8"))
+                obj_post.set_var_body(text)
 
-                print("\n")
                 print(
+                    "\n" +
                     str(obj_post.get_var_number_category()) + "." +
                     str(obj_post.get_var_number_post()) + ") " +
-                    obj_post.get_var_body() + str())
-                print("\n")
+                    obj_post.get_var_body() + str() + "\n")
 
                 return obj_post
 
@@ -210,8 +208,7 @@ def add_post():
         try:
 
             print(
-                "\n" +
-                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                "COMPUTER [.. -> Add " + post_type +
                 " -> Photo]: Enter count photo and press \"Enter\", or enter \"00\" for cancel.")
 
             list_photo = ""
@@ -219,7 +216,7 @@ def add_post():
             user_answer = raw_input("USER [.. -> Add " + post_type + " -> Photo]: ")
 
             if user_answer == "00":
-                "COMPUTER: Cancelling..."
+                print("COMPUTER: Cancelling...")
                 main_menu()
             else:
                 if user_answer == "0":
@@ -274,15 +271,14 @@ def add_post():
     def set_author(post_type, obj_post):
 
         print(
-            "\n" +
-            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+            "COMPUTER [.. -> Add " + post_type +
             " -> Author]: Enter \"1\", if need signature, or \"0\", if not. " +
             "Enter \"00\" for cancel.")
 
         user_answer = raw_input("USER [.. -> Add " + post_type + " -> Author]: ")
 
         if user_answer == "00":
-            "COMPUTER: Cancel..."
+            print("COMPUTER: Cancel...")
             add_post()
         else:
             if user_answer == "0":
@@ -293,8 +289,8 @@ def add_post():
                         cb = gtk.clipboard_get()
 
                         print(
-                            "COMPUTER [Main menu -> Add post -> Add " + post_type +
-                            "-> Author -> URL] Copy link to author's page and press \"Enter\". " +
+                            "COMPUTER [.. -> Add " + post_type +
+                            " -> Author -> URL] Copy link to author's page and press \"Enter\". " +
                             "Enter \"00\" for cancel.")
 
                         user_answer = raw_input("USER [.. -> Author -> URL] ")
@@ -308,11 +304,12 @@ def add_post():
                             url = url.decode("utf8")
 
                             print(
-                                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                                "COMPUTER [.. -> Add " + post_type +
                                 "-> Author -> URL] " + url)
+                            obj_post.set_var_author_url(url)
 
                             print(
-                                "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                                "COMPUTER [.. -> Add " + post_type +
                                 "-> Author -> Full name] " +
                                 "Copy author's full name and press \"Enter\". " +
                                 "Enter \"00\" for cancel.")
@@ -322,7 +319,7 @@ def add_post():
                             name = ""
 
                             if user_answer == "00":
-                                "COMPUTER: Cancel..."
+                                print("COMPUTER: Cancel...")
                                 add_post()
                             else:
                                 name = str(gtk.Clipboard.wait_for_text(cb))
@@ -330,10 +327,8 @@ def add_post():
 
                                 print(
                                     "COMPUTER [Main menu -> Add post -> Add " + post_type +
-                                    "-> Author -> Full name] " + name)
-
-                            obj_post.set_var_author_url(url)
-                            obj_post.set_var_author_name(name)
+                                    " -> Author -> Full name] " + name)
+                                obj_post.set_var_author_name(name)
 
                         return obj_post
 
@@ -438,8 +433,8 @@ def add_post():
     except Exception as var_except:
         print(
             "COMPUTER [Main menu -> Add post]: Error, " + str(var_except) +
-            ". Return to menu Add post...")
-        add_post()
+            ". Return to Main menu...")
+        main_menu()
 
     obj_post = Post()
 
@@ -450,7 +445,7 @@ def add_post():
             obj_post.set_var_number_category(2)
         else:
             print(
-                "COMPUTER [Main menu -> Add post -> " +
+                "COMPUTER [Main menu -> Add post -> Add " +
                 post_type + "]: Error, unknown category of post" +
                 ". Return to Main menu...")
             main_menu()
