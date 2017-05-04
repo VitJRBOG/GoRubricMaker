@@ -3,34 +3,27 @@
 
 import gtk
 import json
+import os
 
 
 def starter():
     try:
-        open("json/questions.json", 'r')
-    except IOError as var_except:
-        file = open("json/questions.json", 'w')
-        file.write("{}")
-        file.close()
+        if os.path.exists("output") is False:
+            os.mkdir("output")
+            print("COMPUTER: Was created directory \"output\".")
 
-        print(
-            "COMPUTER: Error, " + str(var_except) +
-            ". Was created file \"questions.json\".")
-    except Exception as var_except:
-        print(
-            "COMPUTER: Error, " + str(var_except) + ". Exit from program...")
-        exit()
+        if os.path.exists("json") is False:
+            os.mkdir("json")
+            print("COMPUTER: Was created directory \"json\".")
 
-    try:
-        open("json/loss.json", 'r')
-    except IOError as var_except:
-        file = open("json/loss.json", 'w')
-        file.write("{}")
-        file.close()
+        if os.path.exists("json/question.txt") is False:
+            open("json/question.txt", "w")
+            print("COMPUTER: Was created file \"question.txt\".")
 
-        print(
-            "COMPUTER: Error, " + str(var_except) +
-            ". Was created file \"loss.json\".")
+        if os.path.exists("json/loss.txt") is False:
+            open("json/loss.txt", "w")
+            print("COMPUTER: Was created file \"loss.txt\".")
+
     except Exception as var_except:
         print(
             "COMPUTER: Error, " + str(var_except) + ". Exit from program...")
