@@ -8,13 +8,29 @@ import json
 def starter():
     try:
         open("json/questions.json", 'r')
-        open("json/loss.json", 'r')
     except IOError as var_except:
-        open("json/questions.json", 'r')
-        open("json/loss.json", 'r')
+        file = open("json/questions.json", 'w')
+        file.write("{}")
+        file.close()
+
         print(
             "COMPUTER: Error, " + str(var_except) +
-            ". Was created files \"questions.json\" and \"loss.json\"")
+            ". Was created file \"questions.json\".")
+    except Exception as var_except:
+        print(
+            "COMPUTER: Error, " + str(var_except) + ". Exit from program...")
+        exit()
+
+    try:
+        open("json/loss.json", 'r')
+    except IOError as var_except:
+        file = open("json/loss.json", 'w')
+        file.write("{}")
+        file.close()
+
+        print(
+            "COMPUTER: Error, " + str(var_except) +
+            ". Was created file \"loss.json\".")
     except Exception as var_except:
         print(
             "COMPUTER: Error, " + str(var_except) + ". Exit from program...")
