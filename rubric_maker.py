@@ -430,20 +430,219 @@ def add_post():
     obj_post = set_photo(post_type, obj_post)
     obj_post = set_author(post_type, obj_post)
 
+    print("\n" + str(obj_post.get_var_number_category()) + "." +
+          str(obj_post.get_var_number_post()) + ") " +
+          str(obj_post.get_var_body()))
+
+    if obj_post.get_list_photo() != "":
+        list_photo = obj_post.get_list_photo()
+        for i, var_photo in enumerate(list_photo):
+            print(var_photo)
+
+    if str(obj_post.get_var_author()) != "":
+        print(obj_post.get_var_author())
+
     write_post(post_type, obj_post, old_json)
+
+    main_menu()
 
 
 def lists_menu():
+
+    def show_list(old_json):
+        for i, nothing in enumerate(old_json):
+            print(
+                "\n" +
+                str(old_json[str(i)]["category"]) +
+                "." + str(old_json[str(i)]["num"]) +
+                ") " + str(old_json[str(i)]["body"]))
+            if old_json[str(i)]["photo"] != "":
+                for j, nothing in enumerate(old_json[str(i)]["photo"]):
+                    print(str(old_json[str(i)]["photo"][j]))
+            if old_json[str(i)]["author"] != "":
+                print(str(old_json[str(i)]["author"]))
+        lists_menu()
+
     print(
-        "COMPUTER [Main menu -> Lists menu]: Here is empty. " +
-        "Return to Main menu...")
+        "\n" +
+        "COMPUTER [Main menu -> Lists menu]: You are in Lists menu.")
+    print(
+        "COMPUTER [Main menu -> Lists menu -> ]: 1 == Show list of questions.")
+    print(
+        "COMPUTER [Main menu -> Lists menu -> ]: 2 == Show list of loss.")
+    print(
+        "COMPUTER [Main menu -> Lists menu -> ]: 0 == Step back.")
+
+    try:
+        user_answer = raw_input("USER: [.. -> Lists menu -> ] ")
+        if user_answer == "0":
+            main_menu()
+        else:
+            if user_answer == "1":
+                old_json = read_json("questions")
+                show_list(old_json)
+            else:
+                if user_answer == "2":
+                    old_json = read_json("loss")
+                    show_list(old_json)
+                else:
+                    print(
+                        "COMPUTER [Main menu -> Lists menu] Unknown command. " +
+                        "Retry query...")
+                    lists_menu()
+    except Exception as var_except:
+        print(
+            "COMPUTER [Main menu -> Lists menu]: Error, " + str(var_except) +
+            ". Return to Main menu...")
+        main_menu()
+
     main_menu()
 
 
 def file_manager():
+
+    def menu_clear_files():
+
+        def algorythm_clear_file(post_type):
+            print(
+                "COMPUTER [.. -> Clear files -> Clear " +
+                post_type + "]: Are you sure? (1/0)")
+
+            try:
+                user_answer = raw_input("USER: [.. -> Clear files -> Clear " +
+                                        post_type + "] ")
+                if user_answer == "0":
+                    menu_clear_files()
+                else:
+                    if user_answer == "1":
+                        file = open("json/" + post_type + ".json", 'w')
+                        file.write("{}")
+                        file.close()
+                        print(
+                            "COMPUTER [Main menu -> File manager -> Clear files -> " +
+                            "Clear " + post_type + "] File was successfully cleaned. " +
+                            "Return to menu Clear files.")
+                        menu_clear_files()
+                    else:
+                        print(
+                            "COMPUTER [Main menu -> Clear files -> Clear " + post_type + "] " +
+                            "Unknown command. Retry query...")
+                        export_files()
+            except Exception as var_except:
+                print(
+                    "COMPUTER [Main menu -> Clear files -> Clear " + post_type +
+                    "]: Error, " + str(var_except) + ". Return to Main menu...")
+                main_menu()
+
+        print(
+            "\n" +
+            "COMPUTER [.. -> File manager -> Clear files]: " +
+            "You are in menu Clear files.")
+        print(
+            "COMPUTER [.. -> File manager -> Clear files -> ]: " +
+            "1 == Clear \"questions.json\".")
+        print(
+            "COMPUTER [.. -> File manager -> Clear files -> ]: " +
+            "2 == Clear \"loss.json\".")
+        print(
+            "COMPUTER [.. -> File manager -> Clear files -> ]: 0 == Step back.")
+
+        try:
+            user_answer = raw_input("USER: [.. -> File manager -> Clear files] ")
+            if user_answer == "0":
+                file_manager()
+            else:
+                if user_answer == "1":
+                    algorythm_clear_file("questions")
+                else:
+                    if user_answer == "2":
+                        algorythm_clear_file("loss")
+                    else:
+                        print(
+                            "COMPUTER [Main menu -> File manager -> Clear files] " +
+                            "Unknown command. Retry query...")
+                        menu_clear_files()
+        except Exception as var_except:
+            print(
+                "COMPUTER [Main menu -> File manager -> Clear files]: Error, " + str(var_except) +
+                ". Return to Main menu...")
+            main_menu()
+
+    def export_files():
+
+        def algorythm_export_files(old_json, post_type):
+            output_row = ""
+
+            for i, nothing in enumerate(old_json):
+                if i > 0:
+                    output_row = output_row + "\n"
+                output_row = output_row + "\n" +\
+                    str(old_json[str(i)]["category"]) +\
+                    "." + str(old_json[str(i)]["num"]) +\
+                    ") " + str(old_json[str(i)]["body"])
+                if old_json[str(i)]["photo"] != "":
+                    for j, nothing in enumerate(old_json[str(i)]["photo"]):
+                        output_row = output_row + "\n" + str(old_json[str(i)]["photo"][j])
+                if old_json[str(i)]["author"] != "":
+                    output_row = output_row + "\n" + str(old_json[str(i)]["author"])
+
+            file = open("output/" + post_type + ".txt", "w")
+            file.write(output_row)
+            file.close()
+
+        print(
+            "COMPUTER [.. -> File manager -> Export files]: Are you sure? (1/0)")
+
+        try:
+            user_answer = raw_input("USER: [.. -> File manager -> Export files] ")
+            if user_answer == "0":
+                file_manager()
+            else:
+                if user_answer == "1":
+                    algorythm_export_files(read_json("questions"), "questions")
+                    algorythm_export_files(read_json("loss"), "loss")
+                else:
+                    print(
+                        "COMPUTER [Main menu -> File manager -> Export files] Unknown command. " +
+                        "Retry query...")
+                    export_files()
+        except Exception as var_except:
+            print(
+                "COMPUTER [Main menu -> File manager -> Export files]: Error, " + str(var_except) +
+                ". Return to Main menu...")
+            main_menu()
+
     print(
-        "COMPUTER [Main menu -> File manager]: Here is empty. " +
-        "Return to Main menu...")
+        "\n" +
+        "COMPUTER [Main menu -> File manager]: You are in File manager.")
+    print(
+        "COMPUTER [Main menu -> File manager -> ]: 1 == Clear files.")
+    print(
+        "COMPUTER [Main menu -> File manager -> ]: 2 == Export files.")
+    print(
+        "COMPUTER [Main menu -> File manager -> ]: 0 == Step back.")
+
+    try:
+        user_answer = raw_input("USER: [.. -> File manager -> ] ")
+        if user_answer == "0":
+            main_menu()
+        else:
+            if user_answer == "1":
+                menu_clear_files()
+            else:
+                if user_answer == "2":
+                    export_files()
+                else:
+                    print(
+                        "COMPUTER [Main menu -> File manager] Unknown command. " +
+                        "Retry query...")
+                    file_manager()
+    except Exception as var_except:
+        print(
+            "COMPUTER [Main menu -> File manager]: Error, " + str(var_except) +
+            ". Return to Main menu...")
+        main_menu()
+
     main_menu()
 
 
