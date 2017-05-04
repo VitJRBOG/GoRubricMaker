@@ -153,9 +153,10 @@ def add_post():
     def set_number_post(post_type, obj_post, old_json):
         try:
 
-            old_json_map = json.loads(old_json)
-
-            obj_post.set_number_post(len(old_json_map) + 1)
+            if len(old_json) >= 1:
+                obj_post.set_var_number_post(len(old_json) + 1)
+            else:
+                obj_post.set_var_number_post(1)
 
             return obj_post
 
