@@ -225,31 +225,35 @@ def add_post():
                 else:
                     if int(user_answer) > 0 and int(user_answer) <= 10:
                         photo_count = int(user_answer)
-                        list_photo[photo_count + 1]
-                        list_photo[0] = "Фото:"
+                        list_photo = []
+                        list_photo.append("Фото:")
 
                         cb = gtk.clipboard_get()
 
-                        for i, nothing in enumerate(list_photo):
+                        i = 1
 
-                            if i >= 1:
+                        while i <= photo_count:
+                            print(
+                                "COMPUTER [.. -> Add " + post_type +
+                                " -> Photo №" + str(i) + "]: Copy URL and press \"Enter\".")
 
-                                print(
-                                    "COMPUTER [Main menu -> Add post -> Add " + post_type +
-                                    " -> Photo №" + str(i) + "]: Copy URL and press \"Enter\".")
+                            raw_input("USER [.. -> Add photo -> Photo №" + str(i) + "]: ")
 
-                                raw_input("USER [.. -> Add photo -> Photo №" + str(i) + "]: ")
+                            url = str(gtk.Clipboard.wait_for_text(cb))
+                            url = url.decode("utf8")
 
-                                url = str(gtk.Clipboard.wait_for_text(cb))
-                                url = url.decode("utf8")
+                            print(
+                                "COMPUTER [.. -> Add " + post_type +
+                                " -> Photo -> №" + str(i) + "]: " + str(url))
 
-                                print(
-                                    "COMPUTER [Main menu -> Add post -> Add " + post_type +
-                                    " -> Photo -> №1]: " + str(url))
+                            list_photo.append("- " + str(url))
 
-                                list_photo[i] = "- " + url
+                            if i == photo_count:
+                                break
 
-                                obj_post.set_photo(list_photo)
+                            i += 1
+
+                        obj_post.set_list_photo(list_photo)
                     else:
                         print(
                             "COMPUTER [Main menu -> Add post -> Add " + post_type +
