@@ -138,7 +138,8 @@ class Post:
 
 def read_json(post_type):
     try:
-        old_json = json.load(open("json/" + post_type + ".json", 'r'))
+        old_json = json.loads(open("json/" + post_type + ".json", 'r').read())  # dict
+
         return old_json
     except Exception as var_except:
         print(
