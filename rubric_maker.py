@@ -17,11 +17,15 @@ def starter():
             print("COMPUTER: Was created directory \"json\".")
 
         if os.path.exists("json/question.txt") is False:
-            open("json/question.txt", "w")
+            file = open("json/question.txt", "w")
+            file.write("{}")
+            file.close()
             print("COMPUTER: Was created file \"question.txt\".")
 
         if os.path.exists("json/loss.txt") is False:
-            open("json/loss.txt", "w")
+            file = open("json/loss.txt", "w")
+            file.write("{}")
+            file.close()
             print("COMPUTER: Was created file \"loss.txt\".")
 
     except Exception as var_except:
