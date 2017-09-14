@@ -16,17 +16,17 @@ def starter():
             os.mkdir("json")
             print("COMPUTER: Was created directory \"json\".")
 
-        if os.path.exists("json/question.txt") is False:
-            file = open("json/question.txt", "w")
+        if os.path.exists("json/questions.json") is False:
+            file = open("json/questions.json", "w")
             file.write("{}")
             file.close()
-            print("COMPUTER: Was created file \"question.txt\".")
+            print("COMPUTER: Was created file \"questions.json\".")
 
-        if os.path.exists("json/loss.txt") is False:
-            file = open("json/loss.txt", "w")
+        if os.path.exists("json/loss.json") is False:
+            file = open("json/loss.json", "w")
             file.write("{}")
             file.close()
-            print("COMPUTER: Was created file \"loss.txt\".")
+            print("COMPUTER: Was created file \"loss.json\".")
 
     except Exception as var_except:
         print(
@@ -40,15 +40,15 @@ def main_menu():
         "\n" +
         "COMPUTER [Main menu]: You are in Main menu...")
     print(
-        "COMPUTER [Main menu -> ]: 1 == Add post.")
+        "COMPUTER [Main menu]: 1 == Add post.")
     print(
-        "COMPUTER [Main menu -> ]: 2 == Lists menu.")
+        "COMPUTER [Main menu]: 2 == Lists menu.")
     print(
-        "COMPUTER [Main menu -> ]: 3 == File manager.")
+        "COMPUTER [Main menu]: 3 == File manager.")
     print(
-        "COMPUTER [Main menu -> ]: 0 == Close program.")
+        "COMPUTER [Main menu]: 0 == Close program.")
     try:
-        user_answer = raw_input("USER: [Main menu -> ] ")
+        user_answer = raw_input("USER: [Main menu] (1-3/0) ")
         if user_answer == "0":
             print("COMPUTER [Main menu]: Exit from program...")
             exit()
@@ -114,8 +114,10 @@ class Post:
     def get_var_author(self):
         var_author = ""
         if self.var_author_url != "" and self.var_author_name != "":
-            var_author_url = self.var_author_url[self.var_author_url.rfind('/') + 1:]
-            var_author = "*" + var_author_url + " (" + self.var_author_name + ")"
+            var_author_url =\
+                self.var_author_url[self.var_author_url.rfind('/') + 1:]
+            var_author =\
+                "*" + var_author_url + " (" + self.var_author_name + ")"
         return var_author
 
     def get_var_author_url(self):
@@ -135,7 +137,8 @@ class Post:
 
 def read_json(post_type):
     try:
-        old_json = json.loads(open("json/" + post_type + ".json", 'r').read())  # dict
+        old_json =\
+            json.loads(open("json/" + post_type + ".json", 'r').read())  # dict
 
         return old_json
     except Exception as var_except:
@@ -171,9 +174,11 @@ def add_post():
 
             print(
                 "COMPUTER [.. -> Add " + post_type +
-                " -> Body]: Copy text for post and press \"Enter\", or enter \"00\" for cancel.")
+                " -> Body]: Copy text for post and " +
+                "press \"Enter\", or enter \"00\" for cancel.")
 
-            user_answer = raw_input("USER [.. -> Add " + post_type + " -> Body]: ")
+            user_answer = raw_input("USER [.. -> Add " +
+                                    post_type + " -> Body]: (-/00) ")
 
             if user_answer == "00":
                 print("COMPUTER: Cancel...")
@@ -206,11 +211,13 @@ def add_post():
 
             print(
                 "COMPUTER [.. -> Add " + post_type +
-                " -> Photo]: Enter count photo and press \"Enter\", or enter \"00\" for cancel.")
+                " -> Photo]: Enter count photo and " +
+                "press \"Enter\", or enter \"00\" for cancel.")
 
             list_photo = ""
 
-            user_answer = raw_input("USER [.. -> Add " + post_type + " -> Photo]: ")
+            user_answer = raw_input("USER [.. -> Add " +
+                                    post_type + " -> Photo]: (0-10/00) ")
 
             if user_answer == "00":
                 print("COMPUTER: Cancelling...")
@@ -231,9 +238,11 @@ def add_post():
                         while i <= photo_count:
                             print(
                                 "COMPUTER [.. -> Add " + post_type +
-                                " -> Photo №" + str(i) + "]: Copy URL and press \"Enter\".")
+                                " -> Photo №" + str(i) +
+                                "]: Copy URL and press \"Enter\".")
 
-                            raw_input("USER [.. -> Add photo -> Photo №" + str(i) + "]: ")
+                            raw_input("USER [.. -> Add photo -> Photo №" +
+                                      str(i) + "]: ")
 
                             url = str(gtk.Clipboard.wait_for_text(cb))
                             url = url.decode("utf8")
@@ -252,7 +261,8 @@ def add_post():
                         obj_post.set_list_photo(list_photo)
                     else:
                         print(
-                            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                            "COMPUTER [Main menu -> Add post -> Add " +
+                            post_type +
                             ". Photo]: Unknown value. Retry query...")
                         return set_photo
 
@@ -272,7 +282,8 @@ def add_post():
             " -> Author]: Enter \"1\", if need signature, or \"0\", if not. " +
             "Enter \"00\" for cancel.")
 
-        user_answer = raw_input("USER [.. -> Add " + post_type + " -> Author]: ")
+        user_answer = raw_input("USER [.. -> Add " + post_type +
+                                " -> Author]: (0-1/00) ")
 
         if user_answer == "00":
             print("COMPUTER: Cancel...")
@@ -287,10 +298,13 @@ def add_post():
 
                         print(
                             "COMPUTER [.. -> Add " + post_type +
-                            " -> Author -> URL] Copy link to author's page and press \"Enter\". " +
+                            " -> Author -> URL] Copy link to " +
+                            "author's page and press \"Enter\". " +
                             "Enter \"00\" for cancel.")
 
-                        user_answer = raw_input("USER [.. -> Author -> URL] ")
+                        user_answer = raw_input("USER " +
+                                                "[.. -> Author -> URL] " +
+                                                "(-/00) ")
 
                         url = ""
 
@@ -308,10 +322,13 @@ def add_post():
                             print(
                                 "COMPUTER [.. -> Add " + post_type +
                                 "-> Author -> Full name] " +
-                                "Copy author's full name and press \"Enter\". " +
+                                "Copy author's full name and " +
+                                "press \"Enter\". " +
                                 "Enter \"00\" for cancel.")
 
-                            user_answer = raw_input("USER [.. -> Author -> Full name] ")
+                            user_answer = raw_input("USER " +
+                                                    "[.. -> Author -> " +
+                                                    "Full name] ")
 
                             name = ""
 
@@ -323,7 +340,8 @@ def add_post():
                                 name = name.decode("utf8")
 
                                 print(
-                                    "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                                    "COMPUTER [Main menu -> Add post -> Add " +
+                                    post_type +
                                     " -> Author -> Full name] " + name)
                                 obj_post.set_var_author_name(name)
 
@@ -331,13 +349,15 @@ def add_post():
 
                     except Exception as var_except:
                         print(
-                            "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                            "COMPUTER [Main menu -> Add post -> Add " +
+                            post_type +
                             " -> Author]: Error, " + str(var_except) +
                             ". Return to menu Add post...")
                         add_post()
                 else:
                     print(
-                        "COMPUTER [Main menu -> Add post -> Add " + post_type +
+                        "COMPUTER [Main menu -> Add post -> Add " +
+                        post_type +
                         "]: Unknown value. Retry query...")
                     return set_author(post_type, obj_post)
 
@@ -352,9 +372,9 @@ def add_post():
         print(
             "\n" +
             "COMPUTER [.. -> Add post -> Write post]: " +
-            "Write this to file \"questions.json\"? (1/0)")
+            "Write this to file \"" + str(post_type) + ".json\"?")
 
-        user_answer = raw_input("USER [.. -> Add post -> Write post]: ")
+        user_answer = raw_input("USER [.. -> Add post -> Write post]: (1/0) ")
 
         if user_answer == '0':
             print(
@@ -377,13 +397,15 @@ def add_post():
 
                     json_file = open("json/" + post_type + ".json", 'w')
 
-                    json_file.write(json.dumps(done_json, indent=4, ensure_ascii=False))
+                    json_file.write(json.dumps(done_json,
+                                    indent=4, ensure_ascii=False))
 
                     json_file.close()
 
                     print(
                         "COMPUTER [Main menu -> Add post -> Add " + post_type +
-                        " -> Write post] Post was successfully written. Return to menu Add Post.")
+                        " -> Write post] Post was successfully written. " +
+                        "Return to menu Add Post.")
 
                 except Exception as var_except:
                     print(
@@ -402,16 +424,16 @@ def add_post():
         "\n" +
         "COMPUTER [Main menu -> Add post]: You are in menu Add post...")
     print(
-        "COMPUTER [Main menu -> Add post -> ]: 1 == Add question.")
+        "COMPUTER [Main menu -> Add post]: 1 == Add question.")
     print(
-        "COMPUTER [Main menu -> Add post -> ]: 2 == Add loss.")
+        "COMPUTER [Main menu -> Add post]: 2 == Add loss.")
     print(
-        "COMPUTER [Main menu -> Add post -> ]: 0 == Step back.")
+        "COMPUTER [Main menu -> Add post]: 0 == Step back.")
 
     post_type = ""
 
     try:
-        user_answer = raw_input("USER [.. -> Add post -> ]: ")
+        user_answer = raw_input("USER [.. -> Add post]: (1-2/0) ")
 
         if user_answer == "1":
             post_type = "questions"
@@ -491,14 +513,14 @@ def lists_menu():
         "\n" +
         "COMPUTER [Main menu -> Lists menu]: You are in Lists menu.")
     print(
-        "COMPUTER [Main menu -> Lists menu -> ]: 1 == Show list of questions.")
+        "COMPUTER [Main menu -> Lists menu]: 1 == Show list of questions.")
     print(
-        "COMPUTER [Main menu -> Lists menu -> ]: 2 == Show list of loss.")
+        "COMPUTER [Main menu -> Lists menu]: 2 == Show list of loss.")
     print(
-        "COMPUTER [Main menu -> Lists menu -> ]: 0 == Step back.")
+        "COMPUTER [Main menu -> Lists menu]: 0 == Step back.")
 
     try:
-        user_answer = raw_input("USER: [.. -> Lists menu -> ] ")
+        user_answer = raw_input("USER: [.. -> Lists menu] (1-2/0) ")
         if user_answer == "0":
             main_menu()
         else:
@@ -511,7 +533,8 @@ def lists_menu():
                     show_list(old_json)
                 else:
                     print(
-                        "COMPUTER [Main menu -> Lists menu] Unknown command. " +
+                        "COMPUTER [Main menu -> Lists menu] " +
+                        "Unknown command. " +
                         "Retry query...")
                     lists_menu()
     except Exception as var_except:
@@ -525,70 +548,40 @@ def lists_menu():
 
 def file_manager():
 
-    def menu_clear_files():
+    def clear_files():
 
-        def algorythm_clear_file(post_type):
-            print(
-                "COMPUTER [.. -> Clear files -> Clear " +
-                post_type + "]: Are you sure? (1/0)")
-
-            try:
-                user_answer = raw_input("USER: [.. -> Clear files -> Clear " +
-                                        post_type + "] ")
-                if user_answer == "0":
-                    menu_clear_files()
-                else:
-                    if user_answer == "1":
-                        file = open("json/" + post_type + ".json", 'w')
-                        file.write("{}")
-                        file.close()
-                        print(
-                            "COMPUTER [Main menu -> File manager -> Clear files -> " +
-                            "Clear " + post_type + "] File was successfully cleaned. " +
-                            "Return to menu Clear files.")
-                        menu_clear_files()
-                    else:
-                        print(
-                            "COMPUTER [Main menu -> Clear files -> Clear " + post_type + "] " +
-                            "Unknown command. Retry query...")
-                        export_files()
-            except Exception as var_except:
-                print(
-                    "COMPUTER [Main menu -> Clear files -> Clear " + post_type +
-                    "]: Error, " + str(var_except) + ". Return to Main menu...")
-                main_menu()
-
-        print(
-            "\n" +
-            "COMPUTER [.. -> File manager -> Clear files]: " +
-            "You are in menu Clear files.")
-        print(
-            "COMPUTER [.. -> File manager -> Clear files -> ]: " +
-            "1 == Clear \"questions.json\".")
-        print(
-            "COMPUTER [.. -> File manager -> Clear files -> ]: " +
-            "2 == Clear \"loss.json\".")
-        print(
-            "COMPUTER [.. -> File manager -> Clear files -> ]: 0 == Step back.")
+        print("COMPUTER [.. -> Clear files]: Are you sure?")
 
         try:
-            user_answer = raw_input("USER: [.. -> File manager -> Clear files] ")
+            user_answer = raw_input("USER: [.. -> Clear files] (1/0) ")
             if user_answer == "0":
                 file_manager()
             else:
                 if user_answer == "1":
-                    algorythm_clear_file("questions")
+                    file = open("json/questions.json", 'w')
+                    file.write("{}")
+                    file.close()
+
+                    file = open("json/loss.json", 'w')
+                    file.write("{}")
+                    file.close()
+
+                    print(
+                        "COMPUTER [Main menu -> " +
+                        "File manager -> Clear files] " +
+                        "Files was successfully cleaned. " +
+                        "Return to menu Clear files.")
+
+                    file_manager()
                 else:
-                    if user_answer == "2":
-                        algorythm_clear_file("loss")
-                    else:
-                        print(
-                            "COMPUTER [Main menu -> File manager -> Clear files] " +
-                            "Unknown command. Retry query...")
-                        menu_clear_files()
+                    print(
+                        "COMPUTER [Main menu -> Clear files] " +
+                        "Unknown command. Retry query...")
+                    clear_files()
         except Exception as var_except:
             print(
-                "COMPUTER [Main menu -> File manager -> Clear files]: Error, " + str(var_except) +
+                "COMPUTER [Main menu -> Clear files]: Error, " +
+                str(var_except) +
                 ". Return to Main menu...")
             main_menu()
 
@@ -606,19 +599,24 @@ def file_manager():
                     ") " + str(old_json[str(i)]["body"])
                 if old_json[str(i)]["photo"] != "":
                     for j, nothing in enumerate(old_json[str(i)]["photo"]):
-                        output_row = output_row + "\n" + str(old_json[str(i)]["photo"][j])
+                        output_row = output_row + "\n" +\
+                            str(old_json[str(i)]["photo"][j])
                 if old_json[str(i)]["author"] != "":
-                    output_row = output_row + "\n" + str(old_json[str(i)]["author"])
+                    output_row = output_row + "\n" +\
+                        str(old_json[str(i)]["author"])
 
             file = open("output/" + post_type + ".txt", "w")
             file.write(output_row)
             file.close()
 
         print(
-            "COMPUTER [.. -> File manager -> Export files]: Are you sure? (1/0)")
+            "COMPUTER [.. -> File manager -> Export files]: " +
+            "Are you sure?")
 
         try:
-            user_answer = raw_input("USER: [.. -> File manager -> Export files] ")
+            user_answer = raw_input("USER: " +
+                                    "[.. -> File manager -> " +
+                                    "Export files] (1/0) ")
             if user_answer == "0":
                 file_manager()
             else:
@@ -627,12 +625,14 @@ def file_manager():
                     algorythm_export_files(read_json("loss"), "loss")
                 else:
                     print(
-                        "COMPUTER [Main menu -> File manager -> Export files] Unknown command. " +
+                        "COMPUTER [Main menu -> File manager -> " +
+                        "Export files] Unknown command. " +
                         "Retry query...")
                     export_files()
         except Exception as var_except:
             print(
-                "COMPUTER [Main menu -> File manager -> Export files]: Error, " + str(var_except) +
+                "COMPUTER [Main menu -> File manager -> " +
+                "Export files]: Error, " + str(var_except) +
                 ". Return to Main menu...")
             main_menu()
 
@@ -640,30 +640,32 @@ def file_manager():
         "\n" +
         "COMPUTER [Main menu -> File manager]: You are in File manager.")
     print(
-        "COMPUTER [Main menu -> File manager -> ]: 1 == Clear files.")
+        "COMPUTER [Main menu -> File manager]: 1 == Clear files.")
     print(
-        "COMPUTER [Main menu -> File manager -> ]: 2 == Export files.")
+        "COMPUTER [Main menu -> File manager]: 2 == Export files.")
     print(
-        "COMPUTER [Main menu -> File manager -> ]: 0 == Step back.")
+        "COMPUTER [Main menu -> File manager]: 0 == Step back.")
 
     try:
-        user_answer = raw_input("USER: [.. -> File manager -> ] ")
+        user_answer = raw_input("USER: [.. -> File manager -> ] (1-2/0) ")
         if user_answer == "0":
             main_menu()
         else:
             if user_answer == "1":
-                menu_clear_files()
+                clear_files()
             else:
                 if user_answer == "2":
                     export_files()
                 else:
                     print(
-                        "COMPUTER [Main menu -> File manager] Unknown command. " +
+                        "COMPUTER [Main menu -> File manager] " +
+                        "Unknown command. " +
                         "Retry query...")
                     file_manager()
     except Exception as var_except:
         print(
-            "COMPUTER [Main menu -> File manager]: Error, " + str(var_except) +
+            "COMPUTER [Main menu -> File manager]: Error, " +
+            str(var_except) +
             ". Return to Main menu...")
         main_menu()
 
