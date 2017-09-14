@@ -647,7 +647,7 @@ def file_manager():
         "COMPUTER [Main menu -> File manager]: 0 == Step back.")
 
     try:
-        user_answer = raw_input("USER: [.. -> File manager -> ] (1-2/0) ")
+        user_answer = raw_input("USER: [.. -> File manager] (1-2/0) ")
         if user_answer == "0":
             main_menu()
         else:
