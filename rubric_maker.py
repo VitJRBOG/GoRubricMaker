@@ -570,7 +570,7 @@ def file_manager():
                         "COMPUTER [Main menu -> " +
                         "File manager -> Clear files] " +
                         "Files was successfully cleaned. " +
-                        "Return to menu Clear files.")
+                        "Return to menu File manager.")
 
                     file_manager()
                 else:
@@ -623,6 +623,13 @@ def file_manager():
                 if user_answer == "1":
                     algorythm_export_files(read_json("questions"), "questions")
                     algorythm_export_files(read_json("loss"), "loss")
+
+                    print(
+                        "COMPUTER [Main menu -> " +
+                        "File manager -> Export files] " +
+                        "Files was successfully exported. " +
+                        "Return to menu File manager.")
+                    file_manager()
                 else:
                     print(
                         "COMPUTER [Main menu -> File manager -> " +
