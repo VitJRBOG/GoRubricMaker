@@ -8,22 +8,30 @@ import os
 
 def starter():
     try:
-        if os.path.exists("output") is False:
-            os.mkdir("output")
+        if os.path.exists("path.txt") is False:
+            file_text = open("path.txt", "w")
+            file_text.write("")
+            file_text.close()
+            print("COMPUTER: Was created file \"path.txt\".")
+
+        path = read_path_txt()
+
+        if os.path.exists(path + "output") is False:
+            os.mkdir(path + "output")
             print("COMPUTER: Was created directory \"output\".")
 
-        if os.path.exists("json") is False:
-            os.mkdir("json")
+        if os.path.exists(path + "json") is False:
+            os.mkdir(path + "json")
             print("COMPUTER: Was created directory \"json\".")
 
-        if os.path.exists("json/questions.json") is False:
-            file = open("json/questions.json", "w")
+        if os.path.exists(path + "json/questions.json") is False:
+            file = open(path + "json/questions.json", "w")
             file.write("{}")
             file.close()
             print("COMPUTER: Was created file \"questions.json\".")
 
-        if os.path.exists("json/loss.json") is False:
-            file = open("json/loss.json", "w")
+        if os.path.exists(path + "json/loss.json") is False:
+            file = open(path + "json/loss.json", "w")
             file.write("{}")
             file.close()
             print("COMPUTER: Was created file \"loss.json\".")
@@ -32,6 +40,22 @@ def starter():
         print(
             "COMPUTER: Error, " + str(var_except) + ". Exit from program...")
         exit()
+    main_menu()
+
+
+def read_path_txt():
+    try:
+        path = str(open("path.txt", "r").read())
+
+        if len(path) > 0 and path[len(path) - 1] != "/":
+            path += "/"
+
+        return path
+
+    except Exception as var_except:
+        print(
+            "COMPUTER [.. -> Read \"path.txt\"]: Error, " + str(var_except) +
+            ". Return to Main menu...")
     main_menu()
 
 
@@ -136,9 +160,13 @@ class Post:
 
 
 def read_json(post_type):
+
+    PATH = read_path_txt()
+
     try:
         old_json =\
-            json.loads(open("json/" + post_type + ".json", 'r').read())  # dict
+            json.loads(open(PATH + "json/" + post_type +
+                            ".json", 'r').read())  # dict
 
         return old_json
     except Exception as var_except:
@@ -150,6 +178,8 @@ def read_json(post_type):
 
 
 def add_post():
+
+    PATH = read_path_txt()
 
     def set_number_post(post_type, obj_post, old_json):
         try:
@@ -395,7 +425,8 @@ def add_post():
 
                     done_json[int(post_json.get("num") - 1)] = post_json
 
-                    json_file = open("json/" + post_type + ".json", 'w')
+                    json_file = open(PATH + "json/" +
+                                     post_type + ".json", 'w')
 
                     json_file.write(json.dumps(done_json,
                                     indent=4, ensure_ascii=False))
@@ -548,6 +579,8 @@ def lists_menu():
 
 def file_manager():
 
+    PATH = read_path_txt()
+
     def clear_files():
 
         print("COMPUTER [.. -> Clear files]: Are you sure?")
@@ -605,7 +638,7 @@ def file_manager():
                     output_row = output_row + "\n" +\
                         str(old_json[str(i)]["author"])
 
-            file = open("output/" + post_type + ".txt", "w")
+            file = open(PATH + "output/" + post_type + ".txt", "w")
             file.write(output_row)
             file.close()
 
