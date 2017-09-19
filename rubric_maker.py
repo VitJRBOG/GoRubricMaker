@@ -358,7 +358,7 @@ def add_post():
 
                             user_answer = raw_input("USER " +
                                                     "[.. -> Author -> " +
-                                                    "Full name] ")
+                                                    "Full name] (-/00) ")
 
                             name = ""
 
