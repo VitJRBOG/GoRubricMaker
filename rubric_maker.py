@@ -4,6 +4,7 @@
 import gtk
 import json
 import os
+import re
 
 
 def starter():
@@ -73,6 +74,9 @@ def main_menu():
         "COMPUTER [Main menu]: 0 == Close program.")
     try:
         user_answer = raw_input("USER: [Main menu] (1-3/0) ")
+
+        user_answer = re.sub("[^0123456789\.]", "", user_answer)
+
         if user_answer == "0":
             print("COMPUTER [Main menu]: Exit from program...")
             exit()
@@ -210,6 +214,8 @@ def add_post():
             user_answer = raw_input("USER [.. -> Add " +
                                     post_type + " -> Body]: (-/00) ")
 
+            user_answer = re.sub("[^0123456789\.]", "", user_answer)
+
             if user_answer == "00":
                 print("COMPUTER: Cancel...")
                 add_post()
@@ -249,6 +255,8 @@ def add_post():
             user_answer = raw_input("USER [.. -> Add " +
                                     post_type + " -> Photo]: (0-10/00) ")
 
+            user_answer = re.sub("[^0123456789\.]", "", user_answer)
+
             if user_answer == "00":
                 print("COMPUTER: Cancelling...")
                 main_menu()
@@ -256,7 +264,8 @@ def add_post():
                 if user_answer == "0":
                     return obj_post
                 else:
-                    if int(user_answer) > 0 and int(user_answer) <= 10:
+                    if user_answer != "" and\
+                       int(user_answer) > 0 and int(user_answer) <= 10:
                         photo_count = int(user_answer)
                         list_photo = []
                         list_photo.append("Фото:")
@@ -293,8 +302,8 @@ def add_post():
                         print(
                             "COMPUTER [Main menu -> Add post -> Add " +
                             post_type +
-                            ". Photo]: Unknown value. Retry query...")
-                        return set_photo
+                            " -> Photo]: Unknown value. Retry query...")
+                        return set_photo(post_type, obj_post)
 
             return obj_post
 
@@ -314,6 +323,8 @@ def add_post():
 
         user_answer = raw_input("USER [.. -> Add " + post_type +
                                 " -> Author]: (0-1/00) ")
+
+        user_answer = re.sub("[^0123456789\.]", "", user_answer)
 
         if user_answer == "00":
             print("COMPUTER: Cancel...")
@@ -335,6 +346,9 @@ def add_post():
                         user_answer = raw_input("USER " +
                                                 "[.. -> Author -> URL] " +
                                                 "(-/00) ")
+
+                        user_answer = re.sub("[^0123456789\.]", "",
+                                             user_answer)
 
                         url = ""
 
@@ -359,6 +373,9 @@ def add_post():
                             user_answer = raw_input("USER " +
                                                     "[.. -> Author -> " +
                                                     "Full name] (-/00) ")
+
+                            user_answer = re.sub("[^0123456789\.]",
+                                                 "", user_answer)
 
                             name = ""
 
@@ -405,6 +422,8 @@ def add_post():
             "Write this to file \"" + str(post_type) + ".json\"?")
 
         user_answer = raw_input("USER [.. -> Add post -> Write post]: (1/0) ")
+
+        user_answer = re.sub("[^0123456789\.]", "", user_answer)
 
         if user_answer == '0':
             print(
@@ -465,6 +484,8 @@ def add_post():
 
     try:
         user_answer = raw_input("USER [.. -> Add post]: (1-2/0) ")
+
+        user_answer = re.sub("[^0123456789\.]", "", user_answer)
 
         if user_answer == "1":
             post_type = "questions"
@@ -552,6 +573,9 @@ def lists_menu():
 
     try:
         user_answer = raw_input("USER: [.. -> Lists menu] (1-2/0) ")
+
+        user_answer = re.sub("[^0123456789\.]", "", user_answer)
+
         if user_answer == "0":
             main_menu()
         else:
@@ -587,6 +611,9 @@ def file_manager():
 
         try:
             user_answer = raw_input("USER: [.. -> Clear files] (1/0) ")
+
+            user_answer = re.sub("[^0123456789\.]", "", user_answer)
+
             if user_answer == "0":
                 file_manager()
             else:
@@ -650,6 +677,9 @@ def file_manager():
             user_answer = raw_input("USER: " +
                                     "[.. -> File manager -> " +
                                     "Export files] (1/0) ")
+
+            user_answer = re.sub("[^0123456789\.]", "", user_answer)
+
             if user_answer == "0":
                 file_manager()
             else:
@@ -688,6 +718,9 @@ def file_manager():
 
     try:
         user_answer = raw_input("USER: [.. -> File manager] (1-2/0) ")
+
+        user_answer = re.sub("[^0123456789\.]", "", user_answer)
+
         if user_answer == "0":
             main_menu()
         else:
