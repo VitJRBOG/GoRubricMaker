@@ -618,11 +618,11 @@ def file_manager():
                 file_manager()
             else:
                 if user_answer == "1":
-                    file = open("json/questions.json", 'w')
+                    file = open(PATH + "json/questions.json", 'w')
                     file.write("{}")
                     file.close()
 
-                    file = open("json/loss.json", 'w')
+                    file = open(PATH + "json/loss.json", 'w')
                     file.write("{}")
                     file.close()
 
